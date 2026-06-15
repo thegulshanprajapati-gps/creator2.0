@@ -1,0 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Abel&family=Abril+Fatface&family=Alfa+Slab+One&family=Alice&family=Amatic+SC&family=Anonymous+Pro&family=Archivo+Black&family=Arimo&family=Arizonia&family=Arvo&family=Asap&family=Assistant&family=Barlow&family=Bitter&family=Bree+Serif&family=Bricolage+Grotesque&family=Bungee&family=Cabin&family=Cardo&family=Caveat&family=Chivo&family=Cinzel&family=Comfortaa&family=Cormorant+Garamond&family=Courgette&family=Courier+Prime&family=Crimson+Text&family=Dancing+Script&family=DM+Sans&family=DM+Serif+Display&family=Domine&family=Dosis&family=EB+Garamond&family=Exo+2&family=Fira+Code&family=Fira+Sans&family=Fredoka&family=Garamond&family=Geist&family=Georgia&family=Gloria+Hallelujah&family=Gochi+Hand&family=Great+Vibes&family=Heebo&family=Hind&family=IBM+Plex+Mono&family=IBM+Plex+Sans&family=Inconsolata&family=Indie+Flower&family=Inter&family=JetBrains+Mono&family=Josefin+Sans&family=Kanit&family=Karla&family=Kaushan+Script&family=Lato&family=League+Script&family=Lexend&family=Libre+Baskerville&family=Libre+Franklin&family=Lobster&family=Lora&family=Lustria&Manrope&family=Maven+Pro&family=Merriweather&family=Montserrat&family=Mukta&family=Neuton&family=Noto+Sans&family=Noto+Serif&family=Nunito&family=Open+Sans&family=Oswald&family=Outfit&family=Overpass&family=Pacifico&family=Parisienne&family=Permanent+Marker&family=Playfair+Display&family=Plus+Jakarta+Sans&family=Poppins&family=Press+Start+2P&family=Quicksand&family=Raleway&family=Righteous&family=Roboto&family=Roboto+Mono&family=Sacramento&family=Satisfy&family=Space+Grotesk&family=Special+Elite&family=Spectral&family=Tangerine&family=Titan+One&family=Ubuntu&family=Urbanist&family=Varela+Round&family=Work+Sans&family=Yellowtail&family=Yeseva+One&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 228 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    /* Default brand color: red + shades */
+    --primary: 0 85% 52%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 228 40% 94%;
+    --secondary-foreground: 0 85% 52%;
+    --muted: 228 40% 94%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 45 100% 51%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 228 40% 90%;
+    --input: 228 40% 90%;
+    --ring: 0 85% 52%;
+    --radius: 0.75rem;
+    /* Scrollbar thumb defaults (red shades) */
+    --scrollbar-thumb: 0 100% 50%;
+    --scrollbar-thumb-hover: 0 100% 40%;
+    /* Default font variables — overridden by #cms-dynamic-orchestration (client) */
+    --font-headings: '';
+    --font-body: '';
+  }
+  .dark {
+    --background: 222 47% 4%;
+    --foreground: 210 40% 98%;
+    --card: 222 47% 6%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 6%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 0 85% 60%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 217.2 32.6% 12%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 12%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 45 100% 51%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 12%;
+    --input: 217.2 32.6% 12%;
+    --ring: 0 85% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    font-family: inherit;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body) !important;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+    user-select: none;
+  }
+  /* Re-enable text selection only inside actual form inputs */
+  input, textarea, select, [contenteditable] {
+    user-select: text;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-headings) !important;
+    @apply font-bold;
+  }
+  h1 { @apply text-4xl sm:text-5xl; }
+  h2 { @apply text-3xl sm:text-4xl; }
+  h3 { @apply text-2xl sm:text-3xl; }
+  h4 { @apply text-xl sm:text-2xl; }
+  h5 { @apply text-lg sm:text-xl; }
+  h6 { @apply text-base sm:text-lg; }
+}
+
+
+/* Global Ultra-Slim Scrollbar Architecture */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Default subtle scrollbar */
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--scrollbar-thumb) / 0.9);
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--scrollbar-thumb-hover) / 0.95);
+}
+
+/* Mandatory scroll-snap for 100vh sections */
+.snap-container {
+  height: 100dvh;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  width: 100%;
+}
+
+.snap-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  height: 100dvh;
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Ensure no horizontal scrolling ever */
+html, body {
+  overflow-x: hidden !important;
+  width: 100%;
+  height: auto;
+  min-height: 100%;
+}
+
+.glass {
+  @apply bg-background border border-border;
+}
+
+#cms-dynamic-orchestration {}
+
+/* Force admin console headers to be sticky */
+header.flex.h-16 {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 40 !important;
+  background-color: hsl(var(--background) / 0.8) !important;
+  backdrop-filter: blur(16px) !important;
+  border-bottom: 1px solid hsl(var(--border) / 0.8) !important;
+}

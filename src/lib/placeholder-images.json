@@ -1,0 +1,34 @@
+{
+  "placeholderImages": [
+    {
+      "id": "course-1",
+      "description": "Advanced Indigo Web Development",
+      "imageUrl": "https://picsum.photos/seed/indigo1/800/600",
+      "imageHint": "coding indigo"
+    },
+    {
+      "id": "course-2",
+      "description": "Mastering Enterprise Architecture",
+      "imageUrl": "https://picsum.photos/seed/arch/800/600",
+      "imageHint": "server architecture"
+    },
+    {
+      "id": "course-3",
+      "description": "AI-Driven Product Design",
+      "imageUrl": "https://picsum.photos/seed/ai-design/800/600",
+      "imageHint": "ai design"
+    },
+    {
+      "id": "community-1",
+      "description": "Tech Community Meetup",
+      "imageUrl": "https://picsum.photos/seed/comm/800/600",
+      "imageHint": "tech community"
+    },
+    {
+      "id": "avatar-1",
+      "description": "Student Avatar",
+      "imageUrl": "https://picsum.photos/seed/avatar1/200/200",
+      "imageHint": "person portrait"
+    }
+  ]
+}

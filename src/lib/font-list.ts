@@ -1,0 +1,20 @@
+export const GOOGLE_FONTS_LIST = [
+  "Abel", "Abril Fatface", "Alfa Slab One", "Alice", "Amatic SC", "Anonymous Pro", 
+  "Archivo Black", "Arimo", "Arizonia", "Arvo", "Asap", "Assistant", "Barlow", 
+  "Bitter", "Bree Serif", "Bricolage Grotesque", "Bungee", "Cabin", "Cardo", 
+  "Caveat", "Chivo", "Cinzel", "Comfortaa", "Cormorant Garamond", "Courgette", 
+  "Courier Prime", "Crimson Text", "Dancing Script", "DM Sans", "DM Serif Display", 
+  "Domine", "Dosis", "EB Garamond", "Exo 2", "Fira Code", "Fira Sans", "Fredoka", 
+  "Garamond", "Geist", "Georgia", "Gloria Hallelujah", "Gochi Hand", "Great Vibes", 
+  "Heebo", "Hind", "IBM Plex Mono", "IBM Plex Sans", "Inconsolata", 
+  "Indie Flower", "Inter", "JetBrains Mono", "Josefin Sans", "Kanit", "Karla", 
+  "Kaushan Script", "Lato", "League Script", "Lexend", "Libre Baskerville", 
+  "Libre Franklin", "Lobster", "Lora", "Lustria", "Manrope", "Maven Pro", 
+  "Merriweather", "Montserrat", "Mukta", "Neuton", "Noto Sans", "Noto Serif", 
+  "Nunito", "Open Sans", "Oswald", "Outfit", "Overpass", "Pacifico", "Parisienne", 
+  "Permanent Marker", "Playfair Display", "Plus Jakarta Sans", "Poppins", 
+  "Press Start 2P", "Quicksand", "Raleway", "Righteous", "Roboto", "Roboto Mono", 
+  "Sacramento", "Satisfy", "Space Grotesk", "Special Elite", "Spectral", 
+  "Tangerine", "Titan One", "Ubuntu", "Urbanist", "Varela Round", "Work Sans", 
+  "Yellowtail", "Yeseva One"
+];
