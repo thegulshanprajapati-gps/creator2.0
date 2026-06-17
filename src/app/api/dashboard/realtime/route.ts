@@ -19,17 +19,20 @@ export async function GET() {
       }
     }
 
-    const now = new Date();
+        const now = new Date();
     const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
     const activeSessionsCount = await db.collection('security_logs')
-      .distinct('ip', { timestamp: { $gte: fiveMinutesAgo } });
+      .distinct('ip', { 
+        timestamp: { $gte: fiveMinutesAgo },
+        ip: { $nin: ['127.0.0.1', '::1', '::ffff:127.0.0.1', 'localhost', '::'] }
+      });
 
     // Calculate database document density to scale load telemetry realistically
     const totalDocs = Object.values(dbStats).reduce((a, b) => a + b, 0);
-    const activeSessions = activeSessionsCount.length || Math.floor(2 + Math.random() * 5);
-    const cpuUsage = Math.min(95, Math.max(5, Math.floor((totalDocs / 100) + activeSessions * 8 + Math.random() * 5)));
+    const activeSessions = activeSessionsCount.length;
+    const cpuUsage = Math.min(95, Math.max(5, Math.floor((totalDocs / 100) + activeSessions * 8)));
     const ramUsage = Math.min(98, Math.max(10, Math.floor(25 + (totalDocs / 500) + activeSessions * 4)));
-    const requestRate = Math.max(1, Math.floor(activeSessions * 0.5 + Math.random() * 2));
+    const requestRate = Math.max(0, Math.floor(activeSessions * 0.5));
 
     return NextResponse.json({
       success: true,

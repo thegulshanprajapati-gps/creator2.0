@@ -55,9 +55,30 @@ export default function ThemeSettings() {
   const [isSaving, setIsSaving] = useState(false);
   const [saveProgress, setSaveProgress] = useState(0);
 
-  // Typography state
-  const [headingsFont, setHeadingsFont] = useState("Space Grotesk");
-  const [bodyFont, setBodyFont] = useState("Inter");
+  // Typography State
+  const [typography, setTypography] = useState<{
+    headings_font: string;
+    body_font: string;
+    section_headings_font: string;
+    subtitles_font: string;
+    buttons_font: string;
+    nav_font: string;
+    cards_font: string;
+    code_font: string;
+    badges_font: string;
+    banners_font: string;
+  }>({
+    headings_font: "Space Grotesk",
+    body_font: "Inter",
+    section_headings_font: "Space Grotesk",
+    subtitles_font: "Inter",
+    buttons_font: "Inter",
+    nav_font: "Inter",
+    cards_font: "Space Grotesk",
+    code_font: "JetBrains Mono",
+    badges_font: "Inter",
+    banners_font: "Space Grotesk",
+  });
 
   // Font upload state
   const [fontFile, setFontFile] = useState<File | null>(null);
@@ -68,8 +89,18 @@ export default function ThemeSettings() {
     if (settings) {
       if (settings.primaryColor) setPrimary(settings.primaryColor);
       if (settings.themeMode) setThemeMode(settings.themeMode);
-      if (settings.headings_font) setHeadingsFont(settings.headings_font);
-      if (settings.body_font) setBodyFont(settings.body_font);
+      setTypography({
+        headings_font: settings.headings_font || settings.headingsFont || "Space Grotesk",
+        body_font: settings.body_font || settings.bodyFont || "Inter",
+        section_headings_font: settings.section_headings_font || settings.sectionHeadingsFont || "Space Grotesk",
+        subtitles_font: settings.subtitles_font || settings.subtitlesFont || "Inter",
+        buttons_font: settings.buttons_font || settings.buttonsFont || "Inter",
+        nav_font: settings.nav_font || settings.navFont || "Inter",
+        cards_font: settings.cards_font || settings.cardsFont || "Space Grotesk",
+        code_font: settings.code_font || settings.codeFont || "JetBrains Mono",
+        badges_font: settings.badges_font || settings.badgesFont || "Inter",
+        banners_font: settings.banners_font || settings.bannersFont || "Space Grotesk",
+      });
     }
   }, [settings]);
 
@@ -87,14 +118,47 @@ export default function ThemeSettings() {
       });
     }, 60);
 
+    // Font family names validation list (accept any font listed in allFontsList)
+    const validFonts = new Set([
+      ...GOOGLE_FONTS_LIST,
+      ...(customFonts || []).map((f) => f.name),
+    ]);
+
+    const fontFields = [
+      'headings_font', 'body_font', 'section_headings_font', 'subtitles_font',
+      'buttons_font', 'nav_font', 'cards_font', 'code_font', 'badges_font', 'banners_font'
+    ] as const;
+
+    for (const field of fontFields) {
+      const val = typography[field];
+      if (val && !validFonts.has(val)) {
+        toast({
+          variant: "destructive",
+          title: "Invalid Font Selected",
+          description: `Font "${val}" for ${field.replace('_', ' ')} is not allowed.`,
+        });
+        setIsSaving(false);
+        clearInterval(interval);
+        return;
+      }
+    }
+
     try {
       const payload = {
         site_name: settings?.siteName || 'XmartyCreator',
         primary_color: primary,
         secondary_color: primary,
         theme_settings: { themeMode },
-        headings_font: headingsFont,
-        body_font: bodyFont,
+        headings_font: typography.headings_font,
+        body_font: typography.body_font,
+        section_headings_font: typography.section_headings_font,
+        subtitles_font: typography.subtitles_font,
+        buttons_font: typography.buttons_font,
+        nav_font: typography.nav_font,
+        cards_font: typography.cards_font,
+        code_font: typography.code_font,
+        badges_font: typography.badges_font,
+        banners_font: typography.banners_font,
       };
 
       const response = settings?.id
@@ -122,7 +186,7 @@ export default function ThemeSettings() {
         setTimeout(() => setIsSaving(false), 600);
       }, 1500);
     }
-  }, [primary, refreshSettings, settings?.id, settings?.siteName, themeMode, headingsFont, bodyFont, toast]);
+  }, [primary, refreshSettings, settings?.id, settings?.siteName, themeMode, typography, customFonts, toast]);
 
   const handleFontFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
@@ -322,10 +386,36 @@ export default function ThemeSettings() {
             <CardContent className="p-8 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label className="font-bold text-sm">Headings Font Family</Label>
+                  <Label className="font-bold text-sm">Headings Font Family (H1/Hero)</Label>
                   <select
-                    value={headingsFont}
-                    onChange={(e) => setHeadingsFont(e.target.value)}
+                    value={typography.headings_font}
+                    onChange={(e) => setTypography(prev => ({ ...prev, headings_font: e.target.value }))}
+                    className="w-full h-12 rounded-xl bg-background border border-primary/10 px-4 focus:outline-none focus:ring-2 focus:ring-primary font-bold text-foreground"
+                  >
+                    {allFontsList.map((font) => (
+                      <option key={font} value={font}>{font}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="font-bold text-sm">Section Headings Font Family (H2/H3)</Label>
+                  <select
+                    value={typography.section_headings_font}
+                    onChange={(e) => setTypography(prev => ({ ...prev, section_headings_font: e.target.value }))}
+                    className="w-full h-12 rounded-xl bg-background border border-primary/10 px-4 focus:outline-none focus:ring-2 focus:ring-primary font-bold text-foreground"
+                  >
+                    {allFontsList.map((font) => (
+                      <option key={font} value={font}>{font}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="font-bold text-sm">Subtitles & Accents Font Family</Label>
+                  <select
+                    value={typography.subtitles_font}
+                    onChange={(e) => setTypography(prev => ({ ...prev, subtitles_font: e.target.value }))}
                     className="w-full h-12 rounded-xl bg-background border border-primary/10 px-4 focus:outline-none focus:ring-2 focus:ring-primary font-bold text-foreground"
                   >
                     {allFontsList.map((font) => (
@@ -337,8 +427,86 @@ export default function ThemeSettings() {
                 <div className="space-y-2">
                   <Label className="font-bold text-sm">Body Font Family</Label>
                   <select
-                    value={bodyFont}
-                    onChange={(e) => setBodyFont(e.target.value)}
+                    value={typography.body_font}
+                    onChange={(e) => setTypography(prev => ({ ...prev, body_font: e.target.value }))}
+                    className="w-full h-12 rounded-xl bg-background border border-primary/10 px-4 focus:outline-none focus:ring-2 focus:ring-primary font-bold text-foreground"
+                  >
+                    {allFontsList.map((font) => (
+                      <option key={font} value={font}>{font}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="font-bold text-sm">Buttons Font Family</Label>
+                  <select
+                    value={typography.buttons_font}
+                    onChange={(e) => setTypography(prev => ({ ...prev, buttons_font: e.target.value }))}
+                    className="w-full h-12 rounded-xl bg-background border border-primary/10 px-4 focus:outline-none focus:ring-2 focus:ring-primary font-bold text-foreground"
+                  >
+                    {allFontsList.map((font) => (
+                      <option key={font} value={font}>{font}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="font-bold text-sm">Navigation/Menu Font Family</Label>
+                  <select
+                    value={typography.nav_font}
+                    onChange={(e) => setTypography(prev => ({ ...prev, nav_font: e.target.value }))}
+                    className="w-full h-12 rounded-xl bg-background border border-primary/10 px-4 focus:outline-none focus:ring-2 focus:ring-primary font-bold text-foreground"
+                  >
+                    {allFontsList.map((font) => (
+                      <option key={font} value={font}>{font}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="font-bold text-sm">Card Titles Font Family</Label>
+                  <select
+                    value={typography.cards_font}
+                    onChange={(e) => setTypography(prev => ({ ...prev, cards_font: e.target.value }))}
+                    className="w-full h-12 rounded-xl bg-background border border-primary/10 px-4 focus:outline-none focus:ring-2 focus:ring-primary font-bold text-foreground"
+                  >
+                    {allFontsList.map((font) => (
+                      <option key={font} value={font}>{font}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="font-bold text-sm">Code/Monospace Font Family</Label>
+                  <select
+                    value={typography.code_font}
+                    onChange={(e) => setTypography(prev => ({ ...prev, code_font: e.target.value }))}
+                    className="w-full h-12 rounded-xl bg-background border border-primary/10 px-4 focus:outline-none focus:ring-2 focus:ring-primary font-bold text-foreground"
+                  >
+                    {allFontsList.map((font) => (
+                      <option key={font} value={font}>{font}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="font-bold text-sm">Badge & Mini Text Font Family</Label>
+                  <select
+                    value={typography.badges_font}
+                    onChange={(e) => setTypography(prev => ({ ...prev, badges_font: e.target.value }))}
+                    className="w-full h-12 rounded-xl bg-background border border-primary/10 px-4 focus:outline-none focus:ring-2 focus:ring-primary font-bold text-foreground"
+                  >
+                    {allFontsList.map((font) => (
+                      <option key={font} value={font}>{font}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="font-bold text-sm">Banner & Highlights Font Family</Label>
+                  <select
+                    value={typography.banners_font}
+                    onChange={(e) => setTypography(prev => ({ ...prev, banners_font: e.target.value }))}
                     className="w-full h-12 rounded-xl bg-background border border-primary/10 px-4 focus:outline-none focus:ring-2 focus:ring-primary font-bold text-foreground"
                   >
                     {allFontsList.map((font) => (
@@ -349,20 +517,75 @@ export default function ThemeSettings() {
               </div>
 
               {/* Real-time preview */}
-              <div className="border border-dashed border-primary/20 p-6 rounded-2xl bg-muted/5 space-y-3 mt-6">
+              <div className="border border-dashed border-primary/20 p-6 rounded-2xl bg-muted/5 space-y-4 mt-6">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Typography Pulse Preview</span>
-                <h3 
-                  className="text-2xl font-bold transition-all duration-300"
-                  style={{ fontFamily: `'${headingsFont}', sans-serif` }}
-                >
-                  This is your dynamic headings typography
-                </h3>
-                <p 
-                  className="text-sm text-muted-foreground leading-relaxed transition-all duration-300"
-                  style={{ fontFamily: `'${bodyFont}', sans-serif` }}
-                >
-                  This is your body text font preview. Standard paragraphs, lists, descriptions, and dynamic widgets will render using this typeface, fully synchronized.
-                </p>
+                <div className="space-y-4">
+                  <div>
+                    <span className="text-[9px] uppercase font-bold text-muted-foreground">headings_font</span>
+                    <h1 
+                      className="text-3xl font-black transition-all duration-300"
+                      style={{ fontFamily: `'${typography.headings_font}', sans-serif` }}
+                    >
+                      Hero Heading Example Text
+                    </h1>
+                  </div>
+                  <div>
+                    <span className="text-[9px] uppercase font-bold text-muted-foreground">section_headings_font</span>
+                    <h2 
+                      className="text-xl font-bold transition-all duration-300"
+                      style={{ fontFamily: `'${typography.section_headings_font}', sans-serif` }}
+                    >
+                      Section Sub-heading Example Text
+                    </h2>
+                  </div>
+                  <div>
+                    <span className="text-[9px] uppercase font-bold text-muted-foreground">subtitles_font</span>
+                    <p 
+                      className="text-sm font-semibold transition-all duration-300"
+                      style={{ fontFamily: `'${typography.subtitles_font}', sans-serif` }}
+                    >
+                      Subtitle accent text preview
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-[9px] uppercase font-bold text-muted-foreground">body_font</span>
+                    <p 
+                      className="text-sm text-muted-foreground leading-relaxed transition-all duration-300"
+                      style={{ fontFamily: `'${typography.body_font}', sans-serif` }}
+                    >
+                      This is your body text font preview. Standard paragraphs, lists, descriptions, and dynamic widgets will render using this typeface, fully synchronized.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-4 items-center">
+                    <div>
+                      <span className="text-[9px] uppercase font-bold text-muted-foreground block">buttons_font</span>
+                      <Button style={{ fontFamily: `'${typography.buttons_font}', sans-serif` }}>Interactive Button</Button>
+                    </div>
+                    <div>
+                      <span className="text-[9px] uppercase font-bold text-muted-foreground block">badges_font</span>
+                      <Badge variant="outline" className="text-xs py-1.5 px-3" style={{ fontFamily: `'${typography.badges_font}', sans-serif` }}>Badge Element</Badge>
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-[9px] uppercase font-bold text-muted-foreground">code_font</span>
+                    <pre className="p-3 bg-muted rounded-lg text-xs" style={{ fontFamily: `'${typography.code_font}', monospace` }}>
+                      {`const message = "Hello Monospace Font Changer";`}
+                    </pre>
+                  </div>
+                  <div>
+                    <span className="text-[9px] uppercase font-bold text-muted-foreground">cards_font</span>
+                    <div className="p-4 border rounded-xl bg-card">
+                      <h3 className="font-bold text-sm" style={{ fontFamily: `'${typography.cards_font}', sans-serif` }}>Card Heading Font Preview</h3>
+                      <p className="text-xs text-muted-foreground">Card content paragraph using fallback fonts.</p>
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-[9px] uppercase font-bold text-muted-foreground">banners_font</span>
+                    <div className="p-3 bg-primary/10 text-primary border border-primary/25 rounded-lg text-xs font-semibold" style={{ fontFamily: `'${typography.banners_font}', sans-serif` }}>
+                      Special Highlighted Banner Alert Content Text Here!
+                    </div>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>

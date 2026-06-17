@@ -122,7 +122,10 @@ export default function SecurityPage() {
   const fetchAuthAndLogs = async () => {
     setLoading(true);
     try {
-      const authRes = await fetch('/api/auth/verify-domain');
+      const authRes = await fetch('/api/auth/verify-domain', {
+        credentials: 'include',
+        cache: 'no-store'
+      });
       if (authRes.ok) {
         const authData = await authRes.json();
         setCurrentUser(authData.user);
@@ -133,12 +136,19 @@ export default function SecurityPage() {
       if (severityFilter !== 'ALL') query.set('severity', severityFilter);
       if (domainFilter !== 'ALL') query.set('domain', domainFilter);
 
-      const logsRes = await fetch(`/api/audit-logs?${query.toString()}`);
+      const logsRes = await fetch(`/api/audit-logs?${query.toString()}`, {
+        credentials: 'include',
+        cache: 'no-store'
+      });
+      if (logsRes.status === 401 || logsRes.status === 403) {
+        throw new Error('Unauthorized or Forbidden. Please check your credentials.');
+      }
       if (logsRes.ok) {
         const logsData = await logsRes.json();
         setLogs(logsData.logs || []);
       } else {
-        throw new Error('Failed to load audit logs.');
+        const errorData = await logsRes.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to load audit logs.');
       }
     } catch (e: any) {
       toast({ variant: 'destructive', title: 'Fetch Error', description: e.message || String(e) });

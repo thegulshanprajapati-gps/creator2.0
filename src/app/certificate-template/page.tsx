@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/admin/sidebar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,10 +18,12 @@ export default function CertificateTemplatePage() {
   const [saveProgress, setSaveProgress] = useState(0);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
   const [saveErrorMessage, setSaveErrorMessage] = useState('');
+  const [uploadingBg, setUploadingBg] = useState(false);
 
   // Editable settings structure for image background template
   const [settingsPayload, setSettingsPayload] = useState<any>({});
   const [certificateTemplate, setCertificateTemplate] = useState('');
+  const [certLayoutLocked, setCertLayoutLocked] = useState(false);
 
   // Customizable dynamic PDF text styling states
   const [certFontFamily, setCertFontFamily] = useState('helvetica');
@@ -30,6 +32,43 @@ export default function CertificateTemplatePage() {
   const [certFontColor, setCertFontColor] = useState('#cc3333');
   const [certTitleColor, setCertTitleColor] = useState('#1e3a8a');
   const [certExamColor, setCertExamColor] = useState('#33994c');
+
+  // Certificate text layout coordinates states (X, Y mapped to 800x600 PDF canvas, Y is bottom-up)
+  const [currentType, setCurrentType] = useState<'completion' | 'participation'>('completion');
+  const [completionLayout, setCompletionLayout] = useState<any>({
+    studentName: { x: 400, y: 310, fontSize: 26, color: '#cc3333' },
+    examTitle: { x: 400, y: 200, fontSize: 20, color: '#33994c' },
+    certificateId: { x: 50, y: 60, fontSize: 10, color: '#808080' },
+    verificationKey: { x: 50, y: 45, fontSize: 10, color: '#808080' },
+    dateOfCompletion: { x: 400, y: 120, fontSize: 12, color: '#808080' }
+  });
+  const [participationLayout, setParticipationLayout] = useState<any>({
+    studentName: { x: 400, y: 310, fontSize: 26, color: '#cc3333' },
+    examTitle: { x: 400, y: 200, fontSize: 20, color: '#33994c' },
+    certificateId: { x: 50, y: 60, fontSize: 10, color: '#808080' },
+    verificationKey: { x: 50, y: 45, fontSize: 10, color: '#808080' },
+    dateOfCompletion: { x: 400, y: 120, fontSize: 12, color: '#808080' }
+  });
+
+  const certLayout = currentType === 'completion' ? completionLayout : participationLayout;
+  const setCertLayout = (updater: any) => {
+    if (currentType === 'completion') {
+      if (typeof updater === 'function') {
+        setCompletionLayout((prev: any) => updater(prev));
+      } else {
+        setCompletionLayout(updater);
+      }
+    } else {
+      if (typeof updater === 'function') {
+        setParticipationLayout((prev: any) => updater(prev));
+      } else {
+        setParticipationLayout(updater);
+      }
+    }
+  };
+
+  const [selectedField, setSelectedField] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // PowerPoint (.pptx) templates state
   const [pptxTemplates, setPptxTemplates] = useState<any[]>([]);
@@ -48,6 +87,17 @@ export default function CertificateTemplatePage() {
         setCertFontColor(data.settings.cert_font_color || '#cc3333');
         setCertTitleColor(data.settings.cert_title_color || '#1e3a8a');
         setCertExamColor(data.settings.cert_exam_color || '#33994c');
+        setCertLayoutLocked(data.settings.cert_layout_locked === true);
+        if (data.settings.cert_layout_completion) {
+          setCompletionLayout(data.settings.cert_layout_completion);
+        } else if (data.settings.cert_layout) {
+          setCompletionLayout(data.settings.cert_layout);
+        }
+        if (data.settings.cert_layout_participation) {
+          setParticipationLayout(data.settings.cert_layout_participation);
+        } else if (data.settings.cert_layout) {
+          setParticipationLayout(data.settings.cert_layout);
+        }
       }
     } catch (e) {
       console.error(e);
@@ -108,7 +158,11 @@ export default function CertificateTemplatePage() {
           cert_font_italic: certFontItalic,
           cert_font_color: certFontColor,
           cert_title_color: certTitleColor,
-          cert_exam_color: certExamColor
+          cert_exam_color: certExamColor,
+          cert_layout: completionLayout,
+          cert_layout_completion: completionLayout,
+          cert_layout_participation: participationLayout,
+          cert_layout_locked: certLayoutLocked
         })
       });
       clearInterval(progressTimer);
@@ -130,6 +184,46 @@ export default function CertificateTemplatePage() {
       setSaveErrorMessage(e.message || String(e));
       toast({ variant: "destructive", title: "Save Failed", description: e.message });
     }
+  };
+
+  const handlePointerDown = (fieldKey: string, e: React.PointerEvent) => {
+    if (certLayoutLocked) return;
+    e.preventDefault();
+    setSelectedField(fieldKey);
+    const target = e.currentTarget as HTMLDivElement;
+    target.setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (fieldKey: string, e: React.PointerEvent) => {
+    if (certLayoutLocked) return;
+    if (!containerRef.current || !e.currentTarget.hasPointerCapture(e.pointerId)) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    
+    // Relative coordinates in container
+    const clientX = e.clientX - rect.left;
+    const clientY = e.clientY - rect.top;
+    
+    // Convert to percentages first, then map to 800x600 coordinates
+    let pctX = Math.max(0, Math.min(100, (clientX / rect.width) * 100));
+    let pctY = Math.max(0, Math.min(100, (clientY / rect.height) * 100));
+    
+    // PDF coordinate conversion: x is 0 to 800 left-to-right, y is 0 to 600 bottom-to-top
+    const x = Math.round((pctX / 100) * 800);
+    const y = Math.round((1 - pctY / 100) * 600);
+    
+    setCertLayout((prev: any) => ({
+      ...prev,
+      [fieldKey]: {
+        ...prev[fieldKey],
+        x,
+        y
+      }
+    }));
+  };
+
+  const handlePointerUp = (fieldKey: string, e: React.PointerEvent) => {
+    if (certLayoutLocked) return;
+    e.currentTarget.releasePointerCapture(e.pointerId);
   };
 
   const handlePptxUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -204,6 +298,9 @@ export default function CertificateTemplatePage() {
     }
   };
 
+  const activeTemplate = pptxTemplates.find(t => t.type === currentType);
+  const currentBackground = activeTemplate?.fileDataPng || '';
+
   return (
     <SidebarProvider>
       <AdminSidebar />
@@ -265,88 +362,318 @@ export default function CertificateTemplatePage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                 
-                {/* Image Template Customizer */}
-                <Card className="border-slate-200 dark:border-white/5 shadow-xl rounded-[2.5rem] bg-background">
-                  <CardHeader className="bg-gradient-to-r from-amber-500/10 to-transparent border-b">
-                    <CardTitle className="font-headline text-lg flex items-center gap-2">
-                      <ImageIcon className="h-4 w-4 text-amber-500" /> Default PDF Base Graphic
-                    </CardTitle>
-                    <CardDescription>Upload a standard image template to overlay credential text on PDF files.</CardDescription>
+                {/* Interactive Drag and Drop Certificate Designer */}
+                <Card className="border-slate-200 dark:border-white/5 shadow-xl rounded-[2.5rem] bg-background md:col-span-2">
+                  <CardHeader className="bg-gradient-to-r from-amber-500/10 to-transparent border-b flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                      <CardTitle className="font-headline text-lg flex items-center gap-2">
+                        <ImageIcon className="h-4 w-4 text-amber-500" /> Interactive Certificate Layout Designer
+                      </CardTitle>
+                      <CardDescription>Drag labels directly on the template canvas or tweak coordinates below.</CardDescription>
+                    </div>
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                      <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-900/60 p-1 rounded-xl border border-slate-200/50 dark:border-white/5">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCurrentType('completion');
+                            setSelectedField(null);
+                          }}
+                          className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                            currentType === 'completion'
+                              ? 'bg-amber-500 text-white shadow font-extrabold'
+                              : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                          }`}
+                        >
+                          Completion Layout
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCurrentType('participation');
+                            setSelectedField(null);
+                          }}
+                          className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                            currentType === 'participation'
+                              ? 'bg-amber-500 text-white shadow font-extrabold'
+                              : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                          }`}
+                        >
+                          Participation Layout
+                        </button>
+                      </div>
+                    </div>
                   </CardHeader>
                   <CardContent className="p-6">
-                    <form onSubmit={handleSaveSettings} className="space-y-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                       
-                      <div className="space-y-4">
-                        <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
-                          <label className="cursor-pointer bg-amber-500 text-white font-bold h-10 px-4 rounded-xl flex items-center justify-center gap-2 text-xs hover:bg-amber-600 transition-all select-none shadow">
-                            <Palette className="h-4 w-4" /> Upload Base Image
-                            <input
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                  const reader = new FileReader();
-                                  reader.onloadend = () => {
-                                    setCertificateTemplate(reader.result as string);
-                                  };
-                                  reader.readAsDataURL(file);
-                                }
-                              }}
+                      {/* Left: Designer Canvas (Spans 2 cols on lg screens) */}
+                      <div className="lg:col-span-2 space-y-4">
+                        <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block">Canvas Preview (800x600 PDF coordinates)</span>
+                        <div 
+                          ref={containerRef}
+                          className="relative w-full aspect-[800/600] border rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-950/80 shadow-md select-none touch-none"
+                        >
+                           {currentBackground ? (
+                            <img 
+                              src={currentBackground} 
+                              alt={`${currentType} Certificate PPTX Preview`} 
+                              className="absolute inset-0 w-full h-full object-fill pointer-events-none" 
                             />
-                          </label>
+                          ) : (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 p-6 text-center">
+                              <ImageIcon className="h-12 w-12 mb-3 text-amber-500/60 animate-pulse" />
+                              <h4 className="font-bold text-sm text-slate-700 dark:text-slate-300">No PPTX Template Uploaded</h4>
+                              <p className="text-xs max-w-xs mt-1 text-slate-500">Please upload a PowerPoint (.pptx) template under PowerPoint Templates below to load the canvas background layout preview.</p>
+                            </div>
+                          )}
 
-                          {certificateTemplate && (
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => setCertificateTemplate("")}
-                              className="text-rose-500 hover:text-rose-600 h-9 font-bold border-rose-500/20 hover:bg-rose-500/5 rounded-xl"
+                          {/* Render Draggable Fields */}
+                          {Object.entries(certLayout).map(([key, config]: [string, any]) => {
+                            const leftPct = (config.x / 800) * 100;
+                            const topPct = (1 - config.y / 600) * 100; // y is bottom-up in pdf-lib
+                            const isSelected = selectedField === key;
+                            
+                            const labels: Record<string, string> = {
+                              studentName: "STUDENT NAME",
+                              examTitle: "ASSESSMENT TITLE",
+                              certificateId: "CERTIFICATE ID",
+                              verificationKey: "VERIFICATION KEY",
+                              dateOfCompletion: "DATE OF COMPLETION"
+                            };
+
+                            const sampleText: Record<string, string> = {
+                              studentName: "John Doe",
+                              examTitle: "Tailwind CSS Developer...",
+                              certificateId: "CERT-XM987654",
+                              verificationKey: "V-KEY-88776655",
+                              dateOfCompletion: "June 11, 2026"
+                            };
+
+                            return (
+                              <div
+                                key={key}
+                                onPointerDown={(e) => handlePointerDown(key, e)}
+                                onPointerMove={(e) => handlePointerMove(key, e)}
+                                onPointerUp={(e) => handlePointerUp(key, e)}
+                                style={{
+                                  left: `${leftPct}%`,
+                                  top: `${topPct}%`,
+                                  transform: 'translate(-50%, -50%)',
+                                }}
+                                className={`absolute cursor-move select-none px-4 py-2 rounded-xl border font-bold text-center transition-all ${
+                                  isSelected 
+                                    ? 'bg-amber-500/20 border-amber-500 shadow-lg ring-4 ring-amber-500/10 z-30 scale-105' 
+                                    : 'bg-background/95 hover:bg-background border-slate-200 dark:border-white/10 hover:border-amber-500/50 hover:shadow shadow-sm z-20'
+                                }`}
+                              >
+                                <span className="text-[9px] block font-mono opacity-50 uppercase tracking-widest text-slate-500 dark:text-slate-400 pointer-events-none mb-0.5">
+                                  {labels[key]}
+                                </span>
+                                <span 
+                                  className="text-xs sm:text-sm truncate max-w-[180px] font-black block" 
+                                  style={{ 
+                                    color: config.color, 
+                                    fontSize: `${Math.max(10, config.fontSize * 0.7)}px`,
+                                    fontFamily: config.fontFamily === 'times' 
+                                      ? 'Times New Roman, serif' 
+                                      : config.fontFamily === 'courier' 
+                                      ? 'Courier New, monospace' 
+                                      : config.fontFamily === 'cursive' 
+                                      ? 'Great Vibes, cursive' 
+                                      : 'inherit'
+                                  }}
+                                >
+                                  {sampleText[key]}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Right: Style Properties Control Panel */}
+                      <div className="space-y-6 flex flex-col justify-between">
+                        <div className="space-y-4">
+                          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block">Properties Controls</span>
+                          
+                          {/* Selector for fields */}
+                          <div className="space-y-2">
+                            <Label className="text-xs font-bold">Select Placeholders to Configure</Label>
+                            <select
+                              value={selectedField || ''}
+                              onChange={(e) => setSelectedField(e.target.value || null)}
+                              className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-white/10 bg-background text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/20"
                             >
-                              Remove Image
-                            </Button>
+                              <option value="">-- Choose Element --</option>
+                              <option value="studentName">Student Name</option>
+                              <option value="examTitle">Assessment Title</option>
+                              <option value="certificateId">Certificate ID</option>
+                              <option value="verificationKey">Verification Key</option>
+                              <option value="dateOfCompletion">Date of Completion</option>
+                            </select>
+                          </div>
+
+                          {selectedField && certLayout[selectedField] ? (
+                            <div className="p-4 rounded-2xl border bg-slate-50/50 dark:bg-slate-900/40 space-y-4">
+                              <h4 className="font-bold text-xs capitalize text-amber-500">Styling: {selectedField.replace(/([A-Z])/g, ' $1')}</h4>
+                              
+                              {/* Position input grid */}
+                              <div className="grid grid-cols-2 gap-3">
+                                <div className="space-y-1">
+                                  <Label className="text-[10px] font-bold text-slate-500">Coordinate X (0-800)</Label>
+                                  <input 
+                                    type="number"
+                                    min="0"
+                                    max="800"
+                                    value={certLayout[selectedField].x}
+                                    onChange={(e) => {
+                                      const val = parseInt(e.target.value) || 0;
+                                      setCertLayout((prev: any) => ({
+                                        ...prev,
+                                        [selectedField]: { ...prev[selectedField], x: Math.min(800, Math.max(0, val)) }
+                                      }));
+                                    }}
+                                    className="w-full h-9 px-3 rounded-lg border text-xs font-bold bg-background focus:outline-none"
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <Label className="text-[10px] font-bold text-slate-500">Coordinate Y (0-600)</Label>
+                                  <input 
+                                    type="number"
+                                    min="0"
+                                    max="600"
+                                    value={certLayout[selectedField].y}
+                                    onChange={(e) => {
+                                      const val = parseInt(e.target.value) || 0;
+                                      setCertLayout((prev: any) => ({
+                                        ...prev,
+                                        [selectedField]: { ...prev[selectedField], y: Math.min(600, Math.max(0, val)) }
+                                      }));
+                                    }}
+                                    className="w-full h-9 px-3 rounded-lg border text-xs font-bold bg-background focus:outline-none"
+                                  />
+                                </div>
+                              </div>
+
+                              {/* Font size and color */}
+                              <div className="space-y-2">
+                                <div className="flex justify-between items-center">
+                                  <Label className="text-[10px] font-bold text-slate-500">Font Size ({certLayout[selectedField].fontSize}px)</Label>
+                                </div>
+                                <input 
+                                  type="range"
+                                  min="8"
+                                  max="72"
+                                  value={certLayout[selectedField].fontSize}
+                                  onChange={(e) => {
+                                    const val = parseInt(e.target.value) || 12;
+                                    setCertLayout((prev: any) => ({
+                                      ...prev,
+                                      [selectedField]: { ...prev[selectedField], fontSize: val }
+                                    }));
+                                  }}
+                                  className="w-full accent-amber-500 cursor-pointer h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label className="text-[10px] font-bold text-slate-500">Text Hex Color</Label>
+                                <div className="flex gap-2">
+                                  <input 
+                                    type="color"
+                                    value={certLayout[selectedField].color}
+                                    onChange={(e) => {
+                                      setCertLayout((prev: any) => ({
+                                        ...prev,
+                                        [selectedField]: { ...prev[selectedField], color: e.target.value }
+                                      }));
+                                    }}
+                                    className="h-9 w-10 border rounded-lg cursor-pointer bg-background p-0.5"
+                                  />
+                                  <input 
+                                    type="text"
+                                    value={certLayout[selectedField].color}
+                                    onChange={(e) => {
+                                      setCertLayout((prev: any) => ({
+                                        ...prev,
+                                        [selectedField]: { ...prev[selectedField], color: e.target.value }
+                                      }));
+                                    }}
+                                    placeholder="#cc3333"
+                                    className="flex-1 h-9 px-3 rounded-lg border text-xs font-mono font-bold uppercase focus:outline-none bg-background"
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label className="text-[10px] font-bold text-slate-500">Font Family</Label>
+                                <select
+                                  value={certLayout[selectedField].fontFamily || 'helvetica'}
+                                  onChange={(e) => {
+                                    setCertLayout((prev: any) => ({
+                                      ...prev,
+                                      [selectedField]: { ...prev[selectedField], fontFamily: e.target.value }
+                                    }));
+                                  }}
+                                  className="w-full h-9 px-3 rounded-lg border text-xs font-semibold bg-background focus:outline-none"
+                                >
+                                  <option value="helvetica">Helvetica (Default)</option>
+                                  <option value="times">Times Roman</option>
+                                  <option value="courier">Courier</option>
+                                  <option value="cursive">Great Vibes (Cursive)</option>
+                                </select>
+                              </div>
+
+                            </div>
+                          ) : (
+                            <div className="p-6 rounded-2xl border border-dashed text-center text-xs text-muted-foreground bg-slate-50/50 dark:bg-slate-900/20">
+                              Click any field badge on the certificate preview canvas to customize its coordinates and styles here.
+                            </div>
                           )}
                         </div>
 
-                        {/* Preview Area */}
-                        <div className="border border-dashed rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-950 flex flex-col items-center justify-center min-h-[260px] relative">
-                          {certificateTemplate ? (
-                            <div className="relative w-full h-full flex flex-col items-center justify-center p-4">
-                              <img src={certificateTemplate} alt="Certificate base preview" className="max-h-[220px] w-auto object-contain border rounded shadow" />
-                            </div>
-                          ) : (
-                            <div className="text-center p-6 space-y-2 text-muted-foreground">
-                              <ImageIcon className="h-8 w-8 mx-auto opacity-30 text-amber-500" />
-                              <p className="font-semibold text-xs">No graphic template uploaded</p>
-                            </div>
-                          )}
+                        {/* Layout Lock option */}
+                        <div className="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-2xl border flex items-center justify-between gap-4">
+                          <div className="space-y-0.5">
+                            <Label className="text-xs font-bold block cursor-pointer" htmlFor="lock-layout-checkbox">Lock Coordinate Coordinates</Label>
+                            <span className="text-[10px] text-muted-foreground block">Locks draggable labels on canvas to prevent accidental edits.</span>
+                          </div>
+                          <input 
+                            id="lock-layout-checkbox"
+                            type="checkbox"
+                            checked={certLayoutLocked}
+                            onChange={(e) => setCertLayoutLocked(e.target.checked)}
+                            className="h-4 w-4 accent-amber-500 rounded cursor-pointer"
+                          />
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex flex-col gap-2 pt-4 border-t border-slate-100 dark:border-white/5">
+                          <Button 
+                            type="button"
+                            onClick={handleSaveSettings}
+                            disabled={saving}
+                            className="bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl flex items-center justify-center gap-1.5 h-11 text-xs w-full shadow"
+                          >
+                            {saving ? (
+                              <><Loader2 className="h-4 w-4 animate-spin" /> Saving...</>
+                            ) : (
+                              <><Save className="h-4 w-4" /> Save Designer Layout</>
+                            )}
+                          </Button>
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            onClick={fetchSettings} 
+                            className="rounded-xl flex items-center justify-center gap-1.5 font-bold h-11 text-xs w-full"
+                          >
+                            <RefreshCcw className="h-3.5 w-3.5" /> Revert to Saved
+                          </Button>
                         </div>
                       </div>
 
-                      <div className="flex justify-end gap-2 border-t pt-4 border-slate-100 dark:border-white/5">
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          onClick={fetchSettings} 
-                          className="rounded-xl flex items-center gap-1 font-bold h-10 text-xs px-3"
-                        >
-                          <RefreshCcw className="h-3.5 w-3.5" /> Reset
-                        </Button>
-                        <Button 
-                          type="submit" 
-                          disabled={saving} 
-                          className="bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl flex items-center gap-1.5 h-10 text-xs px-4 shadow"
-                        >
-                          {saving ? (
-                            <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Saving...</>
-                          ) : (
-                            <><Save className="h-3.5 w-3.5" /> Save Image</>
-                          )}
-                        </Button>
-                      </div>
-                    </form>
+                    </div>
                   </CardContent>
                 </Card>
 

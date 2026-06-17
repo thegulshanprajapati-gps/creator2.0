@@ -144,6 +144,28 @@ export const CMSProvider = ({ children }: { children: React.ReactNode }) => {
     const activeHeadingsFont = settings?.headingsFont || 'Times New Roman';
     const activeBodyFont = settings?.bodyFont || 'Times New Roman';
 
+    // Dynamically load Google Fonts if not custom/system
+    const loadGoogleFont = (fontName: string) => {
+      if (!fontName) return;
+      const isCustom = customFonts.some(f => f.name.toLowerCase() === fontName.toLowerCase());
+      if (isCustom) return;
+
+      const systemFonts = ['arial', 'times new roman', 'courier new', 'georgia', 'serif', 'sans-serif', 'monospace', 'helvetica'];
+      if (systemFonts.includes(fontName.toLowerCase())) return;
+
+      const id = `gfont-${fontName.toLowerCase().replace(/\s+/g, '-')}`;
+      if (!document.getElementById(id)) {
+        const link = document.createElement('link');
+        link.id = id;
+        link.rel = 'stylesheet';
+        link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/\s+/g, '+')}:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap`;
+        document.head.appendChild(link);
+      }
+    };
+
+    loadGoogleFont(activeHeadingsFont);
+    loadGoogleFont(activeBodyFont);
+
     // Generate @font-face style declarations
     // Use relative /fonts/ path — supportdomain has its own font endpoint backed by the same MongoDB
     const fontFacesCss = customFonts.map(f => {

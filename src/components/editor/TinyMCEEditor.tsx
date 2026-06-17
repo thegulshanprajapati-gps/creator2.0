@@ -49,6 +49,7 @@ export default function TinyMCEEditor({ value, onChange, placeholder, className 
         onEditorChange={(content) => onChange(content)}
         init={{
           height: 320,
+          toolbar_mode: 'sliding',
           menubar: 'insert format table tools help',
           placeholder: placeholder || 'Start writing here...',
           plugins: [

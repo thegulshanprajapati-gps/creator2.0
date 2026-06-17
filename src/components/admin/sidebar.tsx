@@ -66,11 +66,13 @@ const MENU_ITEMS = [
     { label: "Notification Panel", icon: Bell, href: "/notifications" },
     { label: "Role Matrix", icon: ShieldCheck, href: "/settings/roles" },
     { label: "Assessments", icon: ShieldCheck, href: "/assessments" },
+    { label: "Mega Quizzes", icon: ClipboardList, href: "/assessments/megaquizzes" },
     { label: "Test Builder", icon: ClipboardList, href: "/tests" },
     { label: "Student Reports", icon: BarChart, href: "/assessments/student-reports" },
     { label: "Allotted Certificates", icon: ShieldCheck, href: "/assessments/certificates" },
     { label: "Hub Interactions", icon: MessageSquare, href: "/community" },
   ]},
+
   { group: "Core Engine", items: [
     { label: "Service Connections", icon: Plug, href: "/connections" },
     { label: "System Settings", icon: Settings, href: "/settings" },

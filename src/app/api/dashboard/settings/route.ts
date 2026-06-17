@@ -39,6 +39,14 @@ export async function POST(req: Request) {
       secondary_color: payload.secondary_color || '#FF0000',
       headings_font: payload.headings_font || 'Times New Roman',
       body_font: payload.body_font || 'Times New Roman',
+      section_headings_font: payload.section_headings_font || 'Space Grotesk',
+      subtitles_font: payload.subtitles_font || 'Inter',
+      buttons_font: payload.buttons_font || 'Inter',
+      nav_font: payload.nav_font || 'Inter',
+      cards_font: payload.cards_font || 'Space Grotesk',
+      code_font: payload.code_font || 'JetBrains Mono',
+      badges_font: payload.badges_font || 'Inter',
+      banners_font: payload.banners_font || 'Space Grotesk',
       theme_settings: {
         themeMode: payload.theme_settings?.themeMode || 'light'
       },
@@ -52,6 +60,10 @@ export async function POST(req: Request) {
       cert_font_color: payload.cert_font_color || '#cc3333',
       cert_title_color: payload.cert_title_color || '#1e3a8a',
       cert_exam_color: payload.cert_exam_color || '#33994c',
+      cert_layout: payload.cert_layout || null,
+      cert_layout_completion: payload.cert_layout_completion || null,
+      cert_layout_participation: payload.cert_layout_participation || null,
+      cert_layout_locked: payload.cert_layout_locked ?? false,
       updated_at: new Date()
     };
 

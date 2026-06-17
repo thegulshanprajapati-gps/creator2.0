@@ -14,6 +14,7 @@ export async function GET() {
       id: t._id.toString(),
       filename: t.filename,
       type: t.type,
+      fileDataPng: t.fileDataPng || '',
       updatedAt: t.updatedAt || t.updated_at
     }));
 
@@ -25,6 +26,8 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+import { convertPptxToPdfAndPng } from '@/lib/ppt-converter';
 
 export async function POST(req: Request) {
   try {
@@ -39,9 +42,22 @@ export async function POST(req: Request) {
     const lowercaseName = filename.toLowerCase();
     const type = lowercaseName.includes('participation') ? 'participation' : 'completion';
 
+    let pdfBase64 = '';
+    let pngBase64 = '';
+    try {
+      const converted = await convertPptxToPdfAndPng(fileData);
+      pdfBase64 = converted.pdfBase64;
+      pngBase64 = converted.pngBase64;
+    } catch (err: any) {
+      console.error("Failed converting PPTX template during upload:", err);
+      return NextResponse.json({ error: `PPTX conversion failed: ${err.message}` }, { status: 500 });
+    }
+
     const updateDoc = {
       filename,
       fileData, // Base64 PPTX file
+      fileDataPdf: pdfBase64, // Base64 PDF background
+      fileDataPng: pngBase64, // Base64 PNG preview
       type,
       updatedAt: new Date()
     };

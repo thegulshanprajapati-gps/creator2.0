@@ -131,7 +131,17 @@ export function ClientLayoutShell({ children }: { children: React.ReactNode }) {
         let successTitle = "Sync Complete!";
         let successDesc = "Data successfully stored in MongoDB cluster.";
 
-        if (url.includes('settings')) {
+        if (url.includes('login') || url.includes('auth')) {
+          title = "Security Gateway Access";
+          desc = "Verifying credentials and opening admin tunnel...";
+          successTitle = "Access Granted";
+          successDesc = "Admin console authenticated successfully.";
+        } else if (url.includes('certificate')) {
+          title = "Compiling PPTX Certificate";
+          desc = "Converting presentation slides and compiling coordinate maps...";
+          successTitle = "Certificate Saved";
+          successDesc = "Vector background and layout settings live.";
+        } else if (url.includes('settings')) {
           title = "Updating Site Branding";
           desc = "Syncing hex themes and master typography...";
           successTitle = "Branding Applied";
@@ -156,11 +166,26 @@ export function ClientLayoutShell({ children }: { children: React.ReactNode }) {
           desc = "Updating security schemas and group permissions...";
           successTitle = "Policies Applied";
           successDesc = "User roles and privileges successfully updated.";
-        } else if (url.includes('assessments')) {
+        } else if (url.includes('assessments') || url.includes('tests')) {
           title = "Security Keys & Hub Sync";
           desc = "Encrypting assessment levels and credentials...";
           successTitle = "Assessment Synced";
           successDesc = "Test credentials and modules locked.";
+        } else if (url.includes('notifications') || url.includes('push')) {
+          title = "Alerts Broadcast Engine";
+          desc = "Syncing registry and dispatching push tokens...";
+          successTitle = "Registry Synchronized";
+          successDesc = "All alerts successfully sent.";
+        } else if (url.includes('clear-data') || url.includes('recycle-bin') || url.includes('delete')) {
+          title = "Data Deletion Protocol";
+          desc = "Wiping records and purging clusters...";
+          successTitle = "Records Purged";
+          successDesc = "Database space reclaimed successfully.";
+        } else if (url.includes('connections')) {
+          title = "Configuring Cloud Handshake";
+          desc = "Testing SMTP, Firebase, and Database integrations...";
+          successTitle = "Handshake Successful";
+          successDesc = "Cloud connectivity bridges validated.";
         }
 
         setOverlayOpen(true);

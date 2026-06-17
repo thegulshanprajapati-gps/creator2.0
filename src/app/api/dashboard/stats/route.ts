@@ -38,10 +38,13 @@ export async function GET() {
       ? payments.reduce((sum, payment: any) => sum + (typeof payment.amount === 'number' ? payment.amount : 0), 0)
       : 0;
 
-    const startDate = new Date();
+        const startDate = new Date();
     startDate.setDate(startDate.getDate() - 6);
     const rawLogs = await db.collection('security_logs')
-      .find({ timestamp: { $gte: startDate } })
+      .find({ 
+        timestamp: { $gte: startDate },
+        ip: { $nin: ['127.0.0.1', '::1', '::ffff:127.0.0.1', 'localhost', '::'] }
+      })
       .sort({ timestamp: 1 })
       .toArray()
       .catch(() => []);
