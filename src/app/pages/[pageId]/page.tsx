@@ -94,6 +94,7 @@ export default function PageEditor() {
       const res = await fetch('/api/mongodb-gateway', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           action: 'find',
           collection: 'content_blocks',
@@ -193,6 +194,24 @@ export default function PageEditor() {
         return;
       }
 
+      let csrfToken = typeof document !== 'undefined' ? document.cookie.split('; ').find(row => row.trim().startsWith('xmarty_csrf='))?.split('=')[1] : null;
+      if (!csrfToken) {
+        try {
+          const csrfRes = await fetch('/api/auth/csrf');
+          const csrfJson = await csrfRes.json();
+          csrfToken = csrfJson.csrfToken;
+        } catch (e) {
+          console.error('Failed to initialize CSRF token:', e);
+        }
+      }
+
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      if (csrfToken) {
+        headers['x-csrf-token'] = csrfToken;
+      }
+
       for (let i = 0; i < blocksToSave.length; i++) {
         const block = blocksToSave[i];
         if (block.value === null || block.value === '') {
@@ -203,7 +222,8 @@ export default function PageEditor() {
         
         const res = await fetch('/api/mongodb-gateway', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
+          credentials: 'include',
           body: JSON.stringify({
             action: 'upsert',
             collection: 'content_blocks',

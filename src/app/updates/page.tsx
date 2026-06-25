@@ -61,6 +61,7 @@ export default function PlatformUpdatesAdminPage() {
       const res = await fetch('/api/mongodb-gateway', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           action: 'find',
           collection: 'updates',
@@ -154,9 +155,27 @@ export default function PlatformUpdatesAdminPage() {
     if (!isConfirmed) return;
 
     try {
+      let csrfToken = typeof document !== 'undefined' ? document.cookie.split('; ').find(row => row.trim().startsWith('xmarty_csrf='))?.split('=')[1] : null;
+      if (!csrfToken) {
+        try {
+          const csrfRes = await fetch('/api/auth/csrf');
+          const csrfJson = await csrfRes.json();
+          csrfToken = csrfJson.csrfToken;
+        } catch (e) {
+          console.error('Failed to initialize CSRF token:', e);
+        }
+      }
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      if (csrfToken) {
+        headers['x-csrf-token'] = csrfToken;
+      }
+
       const res = await fetch('/api/mongodb-gateway', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
+        credentials: 'include',
         body: JSON.stringify({
           action: 'deleteOne',
           collection: 'updates',
@@ -218,9 +237,27 @@ export default function PlatformUpdatesAdminPage() {
         created_at: editingItem ? editingItem.date : new Date().toISOString()
       };
 
+      let csrfToken = typeof document !== 'undefined' ? document.cookie.split('; ').find(row => row.trim().startsWith('xmarty_csrf='))?.split('=')[1] : null;
+      if (!csrfToken) {
+        try {
+          const csrfRes = await fetch('/api/auth/csrf');
+          const csrfJson = await csrfRes.json();
+          csrfToken = csrfJson.csrfToken;
+        } catch (e) {
+          console.error('Failed to initialize CSRF token:', e);
+        }
+      }
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      if (csrfToken) {
+        headers['x-csrf-token'] = csrfToken;
+      }
+
       const res = await fetch('/api/mongodb-gateway', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
+        credentials: 'include',
         body: JSON.stringify({
           action: 'upsert',
           collection: 'updates',
