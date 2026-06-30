@@ -152,15 +152,15 @@ export function AdminSidebar() {
   }).filter(Boolean) as typeof MENU_ITEMS;
 
   return (
-    <Sidebar variant="inset" collapsible="icon" className="border-r-0 bg-gradient-to-b from-indigo-50/80 to-slate-50/20 dark:from-indigo-950/20 dark:to-transparent border-indigo-200/50 dark:border-indigo-500/20">
-      <SidebarHeader className="border-b h-16 flex items-center px-4 bg-transparent border-indigo-200/50 dark:border-indigo-500/20">
+    <Sidebar variant="inset" collapsible="icon" className="border-r-0 bg-gradient-to-b from-red-50/80 to-slate-50/20 dark:from-red-950/20 dark:to-transparent border-red-200/50 dark:border-red-500/20">
+      <SidebarHeader className="border-b h-16 flex items-center px-4 bg-transparent border-red-200/50 dark:border-red-500/20">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-blue-600 flex items-center justify-center shadow-md">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-red-500 to-rose-600 flex items-center justify-center shadow-md">
             <span className="text-white font-bold text-xs tracking-tighter">XC</span>
           </div>
           <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-            <span className="font-headline font-bold text-base leading-tight text-indigo-900 dark:text-indigo-400">Xmarty Support</span>
-            <span className="text-[10px] text-indigo-700 dark:text-indigo-500 uppercase tracking-widest font-bold">Admin Console</span>
+            <span className="font-headline font-bold text-base leading-tight text-red-900 dark:text-red-400 font-sans">Xmarty Support</span>
+            <span className="text-[10px] text-red-700 dark:text-red-500 uppercase tracking-widest font-bold font-sans">Admin Console</span>
           </div>
         </div>
       </SidebarHeader>
@@ -169,10 +169,10 @@ export function AdminSidebar() {
           <div className="space-y-6 px-4 animate-pulse">
             {[1, 2, 3].map((g) => (
               <div key={g} className="space-y-3">
-                <div className="h-3 w-24 bg-indigo-200/50 dark:bg-indigo-800/30 rounded" />
+                <div className="h-3 w-24 bg-red-200/50 dark:bg-red-800/30 rounded" />
                 <div className="space-y-2">
                   {[1, 2].map((i) => (
-                    <div key={i} className="h-10 w-full bg-indigo-100/50 dark:bg-indigo-900/20 rounded-xl" />
+                    <div key={i} className="h-10 w-full bg-red-100/50 dark:bg-red-900/20 rounded-xl" />
                   ))}
                 </div>
               </div>
@@ -181,7 +181,7 @@ export function AdminSidebar() {
         ) : (
           filteredMenuItems.map((group) => (
             <SidebarGroup key={group.group} className="mb-4">
-              <SidebarGroupLabel className="px-4 text-[10px] font-bold uppercase tracking-[0.3em] text-indigo-700/80 dark:text-indigo-500 group-data-[collapsible=icon]:hidden">
+              <SidebarGroupLabel className="px-4 text-[10px] font-bold uppercase tracking-[0.3em] text-red-700/80 dark:text-red-500 group-data-[collapsible=icon]:hidden font-sans">
                 {group.group}
               </SidebarGroupLabel>
               <SidebarGroupContent>
@@ -194,16 +194,16 @@ export function AdminSidebar() {
                           asChild 
                           isActive={isActive}
                           className={cn(
-                            "transition-all duration-300 rounded-xl h-11 px-4 font-bold text-sm",
+                            "transition-all duration-300 rounded-xl h-11 px-4 font-bold text-sm font-sans",
                             isActive 
-                              ? "bg-indigo-500/20 text-indigo-950 dark:text-indigo-300 border border-indigo-500/30 shadow-sm" 
-                              : "text-indigo-800/80 hover:text-indigo-900 dark:text-indigo-400/80 dark:hover:text-indigo-300 hover:bg-indigo-500/10"
+                              ? "bg-red-500/15 text-red-950 dark:text-red-300 border border-red-500/25 shadow-sm" 
+                              : "text-red-800/80 hover:text-red-900 dark:text-red-400/80 dark:hover:text-red-300 hover:bg-red-500/10"
                           )}
                         >
                           <NextLink href={item.href}>
-                            <item.icon className={cn("w-4 h-4 text-indigo-600 dark:text-indigo-500", isActive ? "text-indigo-900 dark:text-indigo-300" : "")} />
+                            <item.icon className={cn("w-4 h-4 text-red-600 dark:text-red-500", isActive ? "text-red-900 dark:text-red-300" : "")} />
                             <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
-                            {isActive && <ChevronRight className="ml-auto w-3 h-3 group-data-[collapsible=icon]:hidden text-indigo-700 dark:text-indigo-500" />}
+                            {isActive && <ChevronRight className="ml-auto w-3 h-3 group-data-[collapsible=icon]:hidden text-red-700 dark:text-red-500" />}
                           </NextLink>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -215,17 +215,17 @@ export function AdminSidebar() {
           ))
         )}
       </SidebarContent>
-      <SidebarFooter className="p-4 border-t bg-transparent border-indigo-200/50 dark:border-indigo-500/20">
+      <SidebarFooter className="p-4 border-t bg-transparent border-red-200/50 dark:border-red-500/20">
         <div className="space-y-2">
           <SidebarMenuButton
-            className="hover:bg-indigo-500/10 text-indigo-800 dark:text-indigo-400 group-data-[collapsible=icon]:justify-center h-12 rounded-xl font-bold"
+            className="hover:bg-red-500/10 text-red-800 dark:text-red-400 group-data-[collapsible=icon]:justify-center h-12 rounded-xl font-bold font-sans"
             onClick={toggleTheme}
           >
             {mounted ? (
               localTheme === "dark" ? (
-                <Sun className="w-4 h-4 text-indigo-500" />
+                <Sun className="w-4 h-4 text-red-500" />
               ) : (
-                <Moon className="w-4 h-4 text-indigo-600" />
+                <Moon className="w-4 h-4 text-red-600" />
               )
             ) : (
               <span className="w-4 h-4 inline-block" />
@@ -236,7 +236,7 @@ export function AdminSidebar() {
           </SidebarMenuButton>
 
           <SidebarMenuButton 
-            className="text-rose-600 hover:bg-rose-500/10 group-data-[collapsible=icon]:justify-center h-12 rounded-xl font-bold"
+            className="text-rose-600 hover:bg-rose-500/10 group-data-[collapsible=icon]:justify-center h-12 rounded-xl font-bold font-sans"
             onClick={async () => {
               try {
                 await db.auth.signOut();

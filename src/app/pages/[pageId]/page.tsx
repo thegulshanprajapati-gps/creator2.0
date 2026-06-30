@@ -34,6 +34,7 @@ export default function PageEditor() {
   const [imageUploading, setImageUploading] = useState<Record<string, boolean>>({});
   const [previewWidth, setPreviewWidth] = useState('100%');
   const [generatingSeo, setGeneratingSeo] = useState(false);
+  const [selectedAssetType, setSelectedAssetType] = useState<'desktop' | 'mobile'>('desktop');
   const [saveProgress, setSaveProgress] = useState(0);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
   const [saveErrorMessage, setSaveErrorMessage] = useState('');
@@ -802,7 +803,49 @@ export default function PageEditor() {
                               </div>
                             );
                           }
-                          
+                          if (field.key === 'mobileImage') {
+                            // Skip rendering since we group it inside the 'image' field
+                            return null;
+                          }
+
+                          if (field.key === 'image') {
+                            const mobileField = section.fields.find(f => f.key === 'mobileImage');
+                            const desktopVal = content[section.key]?.[field.key] || '';
+                            const mobileVal = mobileField ? (content[section.key]?.[mobileField.key] || '') : '';
+                            
+                            return (
+                              <div key={field.key} className="space-y-4 w-full min-w-0 col-span-full border border-primary/10 rounded-3xl p-6 bg-background shadow-sm">
+                                <div className="flex items-center justify-between border-b pb-4 mb-2">
+                                  <Label className="text-base font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 ml-1">Hero Section Assets</Label>
+                                  <div className="w-60">
+                                    <Select value={selectedAssetType} onValueChange={(v: 'desktop' | 'mobile') => setSelectedAssetType(v)}>
+                                      <SelectTrigger className="w-full h-11 rounded-xl border border-primary/10 bg-background shadow-sm">
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                      <SelectContent className="rounded-xl border border-primary/10">
+                                        <SelectItem value="desktop">🖥️ Desktop View Asset</SelectItem>
+                                        <SelectItem value="mobile">📱 Phone View Asset</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                </div>
+                                {selectedAssetType === 'desktop' ? (
+                                  <div className="space-y-2">
+                                    <p className="text-xs text-muted-foreground ml-1">Configure the image shown on Desktop computers.</p>
+                                    {renderField(field, section.key, desktopVal)}
+                                  </div>
+                                ) : (
+                                  mobileField && (
+                                    <div className="space-y-2">
+                                      <p className="text-xs text-muted-foreground ml-1">Configure the background image shown on mobile phones.</p>
+                                      {renderField(mobileField, section.key, mobileVal)}
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            );
+                          }
+
                           return (
                             <div key={field.key} className={`space-y-4 ${field.type === 'richtext' || field.type === 'textarea' || field.type === 'json' ? 'col-span-full' : ''}`}>
                               <Label className="text-sm font-bold uppercase tracking-wider text-muted-foreground ml-1">{field.label}</Label>

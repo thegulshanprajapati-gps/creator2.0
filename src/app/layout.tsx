@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+export const dynamic = 'force-dynamic';
 import './globals.css';
 import { CMSProvider } from "@/components/cms-provider";
 import { ClientLayoutShell } from "@/components/client-layout-shell";
