@@ -23,11 +23,16 @@ import {
   Search,
   Lock,
   Eye,
-  Server
+  Server,
+  Download,
+  Plus,
+  X,
+  FileSpreadsheet
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import { 
   AreaChart, 
   Area, 
@@ -51,6 +56,67 @@ export default function SupportDashboard() {
   const [logs, setLogs] = useState<any[]>([]);
   const [securityLogs, setSecurityLogs] = useState<any[]>([]);
   const [isInitializing, setIsInitializing] = useState(true);
+
+  // New features state
+  const [isUpdatingSitemap, setIsUpdatingSitemap] = useState(false);
+  const [isBlogModalOpen, setIsBlogModalOpen] = useState(false);
+  const [blogTitle, setBlogTitle] = useState('');
+  const [blogContent, setBlogContent] = useState('');
+  const [blogCategory, setBlogCategory] = useState('Tech');
+  const [blogExcerpt, setBlogExcerpt] = useState('');
+  const [isPostingBlog, setIsPostingBlog] = useState(false);
+
+  const handleInitializeUpdate = async () => {
+    setIsUpdatingSitemap(true);
+    try {
+      const res = await fetch('/api/sitemap-generator', { method: 'POST' });
+      if (res.ok) {
+        alert('Sitemaps initialized and updated successfully for both Main and Support site!');
+      } else {
+        alert('Failed to update sitemaps.');
+      }
+    } catch (err) {
+      alert('Error updating sitemaps: ' + err);
+    } finally {
+      setIsUpdatingSitemap(false);
+    }
+  };
+
+  const handlePostBlog = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!blogTitle || !blogContent) {
+      alert('Title and Content are required.');
+      return;
+    }
+    setIsPostingBlog(true);
+    try {
+      const res = await fetch('/api/blogs/instant-post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: blogTitle,
+          content: blogContent,
+          category: blogCategory,
+          excerpt: blogExcerpt
+        })
+      });
+      if (res.ok) {
+        alert('Blog posted successfully!');
+        setIsBlogModalOpen(false);
+        setBlogTitle('');
+        setBlogContent('');
+        setBlogCategory('Tech');
+        setBlogExcerpt('');
+      } else {
+        const errData = await res.json();
+        alert('Failed to post blog: ' + (errData.error || 'Unknown error'));
+      }
+    } catch (err) {
+      alert('Error posting blog: ' + err);
+    } finally {
+      setIsPostingBlog(false);
+    }
+  };
 
   const fetchSecurityLogs = async (signal?: AbortSignal) => {
     try {
@@ -156,9 +222,18 @@ export default function SupportDashboard() {
                   <Bell className="h-4 w-4" />
                 </Button>
                 <div className="h-4 w-px bg-border" />
-                <Button size="sm" className="bg-muted text-foreground shadow-lg shadow-muted/20 font-bold text-xs md:text-sm">
-                  <Zap className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" />
-                  <span className="hidden sm:inline">Initialize</span> Update
+                <Button 
+                  size="sm" 
+                  onClick={handleInitializeUpdate} 
+                  disabled={isUpdatingSitemap}
+                  className="bg-muted text-foreground shadow-lg shadow-muted/20 font-bold text-xs md:text-sm"
+                >
+                  {isUpdatingSitemap ? (
+                    <Loader2 className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4 animate-spin" />
+                  ) : (
+                    <Zap className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" />
+                  )}
+                  <span className="hidden sm:inline">{isUpdatingSitemap ? 'Updating...' : 'Initialize Update'}</span>
                 </Button>
               </div>
             </div>
@@ -220,6 +295,33 @@ export default function SupportDashboard() {
                     />
                   </div>
                 </div>
+
+                {/* Quick Actions Console */}
+                <Card className="shadow-2xl border-primary/5 rounded-2xl md:rounded-[2rem] overflow-hidden bg-background/80 backdrop-blur-sm p-6 md:p-8">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div>
+                      <h2 className="font-headline font-bold text-xl text-foreground">Data & Content Orchestrator</h2>
+                      <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold mt-1">Export platform metrics or instantly publish articles</p>
+                    </div>
+                    <div className="flex flex-wrap gap-4">
+                      <Button asChild className="rounded-xl font-bold bg-primary text-white hover:bg-primary/95 flex items-center gap-2">
+                        <a href="/api/download/courses" download>
+                          <Download className="h-4 w-4" /> Download Courses (ZIP)
+                        </a>
+                      </Button>
+                      <Button asChild variant="outline" className="rounded-xl font-bold border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700 bg-background/50 hover:bg-background/80 flex items-center gap-2">
+                        <a href="/api/download/users" download>
+                          <FileSpreadsheet className="h-4 w-4" /> Download User Data (Excel)
+                        </a>
+                      </Button>
+                      <Button asChild className="rounded-xl font-bold bg-foreground text-background hover:bg-foreground/90 flex items-center gap-2">
+                        <Link href="/blogs">
+                          <Plus className="h-4 w-4" /> Post Instant Blog
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-6">
                   <div className="lg:col-span-2 dashboard-realtime-widget">
@@ -408,6 +510,100 @@ export default function SupportDashboard() {
           </main>
         </SidebarInset>
       </SidebarProvider>
+      {/* Instant Blog Post Modal */}
+      {isBlogModalOpen && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-background border border-border rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl p-6 md:p-8 space-y-6 relative max-h-[90vh] overflow-y-auto">
+            <button 
+              onClick={() => setIsBlogModalOpen(false)}
+              className="absolute top-4 right-4 h-8 w-8 rounded-full hover:bg-muted flex items-center justify-center text-muted-foreground hover:text-foreground transition-all"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <div>
+              <h3 className="font-headline font-bold text-2xl text-foreground">Post Instant Blog</h3>
+              <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold mt-1">Publish an article directly to the live feed</p>
+            </div>
+            
+            <form onSubmit={handlePostBlog} className="space-y-4 font-sans text-sm">
+              <div className="space-y-2">
+                <label className="block font-bold text-xs uppercase tracking-wider text-muted-foreground">Blog Title</label>
+                <input 
+                  type="text" 
+                  value={blogTitle} 
+                  onChange={(e) => setBlogTitle(e.target.value)} 
+                  placeholder="e.g. Mastering Next.js Server Components"
+                  className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground outline-none focus:border-primary transition-all"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="block font-bold text-xs uppercase tracking-wider text-muted-foreground">Category</label>
+                  <select 
+                    value={blogCategory} 
+                    onChange={(e) => setBlogCategory(e.target.value)} 
+                    className="w-full h-11 px-3 rounded-xl border border-border bg-background text-foreground outline-none focus:border-primary transition-all"
+                  >
+                    <option value="Tech">Tech</option>
+                    <option value="Career">Career</option>
+                    <option value="Design">Design</option>
+                    <option value="AI">AI</option>
+                    <option value="General">General</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="block font-bold text-xs uppercase tracking-wider text-muted-foreground">Short Excerpt</label>
+                  <input 
+                    type="text" 
+                    value={blogExcerpt} 
+                    onChange={(e) => setBlogExcerpt(e.target.value)} 
+                    placeholder="Short description..."
+                    className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground outline-none focus:border-primary transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block font-bold text-xs uppercase tracking-wider text-muted-foreground">Article Content</label>
+                <textarea 
+                  value={blogContent} 
+                  onChange={(e) => setBlogContent(e.target.value)} 
+                  placeholder="Write your article here..."
+                  rows={8}
+                  className="w-full p-4 rounded-2xl border border-border bg-background text-foreground outline-none focus:border-primary transition-all resize-none"
+                  required
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4 border-t">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => setIsBlogModalOpen(false)}
+                  className="rounded-xl font-bold border-slate-200 dark:border-slate-800"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={isPostingBlog}
+                  className="rounded-xl font-bold bg-primary text-white hover:bg-primary/95 flex items-center gap-2"
+                >
+                  {isPostingBlog ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" /> Publishing...
+                    </>
+                  ) : (
+                    'Publish Instantly'
+                  )}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </>
   );
 }

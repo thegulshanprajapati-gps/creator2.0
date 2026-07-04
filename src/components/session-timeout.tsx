@@ -10,6 +10,7 @@ export function SessionTimeout() {
   const [timeLeft, setTimeLeft] = useState<number>(900);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [portalTarget, setPortalTarget] = useState<Element | null>(null);
+  const [feedback, setFeedback] = useState<{ text: string; type: 'add' | 'subtract' } | null>(null);
 
   // Check login session & handle countdown
   useEffect(() => {
@@ -78,6 +79,8 @@ export function SessionTimeout() {
       }
       return newTime;
     });
+    setFeedback({ text: `+${minutes} Minutes Added`, type: 'add' });
+    setTimeout(() => setFeedback(null), 1200);
   };
 
   const subtractTime = (minutes: number) => {
@@ -88,6 +91,8 @@ export function SessionTimeout() {
       }
       return newTime;
     });
+    setFeedback({ text: `-${minutes} Minute Subtracted`, type: 'subtract' });
+    setTimeout(() => setFeedback(null), 1200);
   };
 
   // Format seconds to MM:SS
@@ -191,6 +196,17 @@ export function SessionTimeout() {
               TERMINATE SESSION & LOGOUT
             </button>
           </div>
+        </div>
+      )}
+      {/* Premium feedback flash overlay */}
+      {feedback && (
+        <div className="fixed inset-0 z-[10000] pointer-events-none flex items-center justify-center animate-fade-in">
+          <span className={cn(
+            "font-headline font-black text-6xl md:text-8xl tracking-wider uppercase italic drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)] select-none",
+            feedback.type === 'add' ? "text-emerald-400" : "text-rose-500"
+          )}>
+            {feedback.type === 'add' ? '+5M' : '-1M'}
+          </span>
         </div>
       )}
     </>
