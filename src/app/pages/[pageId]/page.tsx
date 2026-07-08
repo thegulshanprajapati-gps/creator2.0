@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/admin/sidebar";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -392,14 +392,14 @@ export default function PageEditor() {
                 value={effectiveVal}
                 onChange={handleChange}
                 placeholder={field.placeholder || "e.g. #FF0000, hsl(var(--primary)) or transparent"}
-                className="h-14 rounded-2xl text-lg pl-14 pr-10 border-primary/10 bg-background shadow-sm"
+                className="h-10 rounded-xl text-sm pl-11 pr-10 border-primary/10 bg-background shadow-sm"
               />
               <div 
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border border-primary/10 shadow-inner flex items-center justify-center overflow-hidden cursor-pointer bg-slate-100 dark:bg-slate-800"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-5.5 h-5.5 rounded-full border border-primary/10 shadow-inner flex items-center justify-center overflow-hidden cursor-pointer bg-slate-100 dark:bg-slate-800"
                 style={{ backgroundColor: effectiveVal && effectiveVal !== 'transparent' ? effectiveVal : 'transparent' }}
               >
                 {!effectiveVal || effectiveVal === 'transparent' ? (
-                  <div className="w-full h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[8px] font-bold text-muted-foreground">None</div>
+                  <div className="w-full h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[7px] font-bold text-muted-foreground">None</div>
                 ) : null}
                 <input 
                   type="color" 
@@ -412,7 +412,7 @@ export default function PageEditor() {
                 <button 
                   type="button"
                   onClick={() => handleChange('')}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground text-sm font-bold"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground text-xs font-bold"
                   title="Clear color"
                 >
                   ✕
@@ -428,7 +428,7 @@ export default function PageEditor() {
           value={effectiveVal}
           onChange={handleChange}
           placeholder={field.placeholder}
-          className="h-14 rounded-2xl text-lg px-6 border-primary/10 bg-background shadow-sm"
+          className="h-10 rounded-xl text-sm px-4 border-primary/10 bg-background shadow-sm"
         />
       );
     }
@@ -439,7 +439,7 @@ export default function PageEditor() {
           value={effectiveVal}
           onChange={handleChange}
           placeholder={field.placeholder}
-          className="min-h-[120px] rounded-2xl text-lg px-6 py-5 border-primary/10 bg-background shadow-sm resize-y"
+          className="min-h-[90px] rounded-xl text-sm px-4 py-3 border-primary/10 bg-background shadow-sm resize-y"
         />
       );
     }
@@ -460,7 +460,7 @@ export default function PageEditor() {
           value={effectiveVal}
           onChange={handleChange}
           placeholder={field.placeholder || '{\n  // Valid JSON expected\n}'}
-          className="font-mono min-h-[200px] rounded-2xl px-6 py-5 border-primary/10 bg-background shadow-sm resize-y"
+          className="font-mono min-h-[160px] rounded-xl px-4 py-3 border-primary/10 bg-background shadow-sm resize-y text-xs"
         />
       );
     }
@@ -482,10 +482,10 @@ export default function PageEditor() {
                 }
               }}
             >
-              <SelectTrigger className="w-full h-14 rounded-2xl text-base md:text-lg px-4 md:px-6 border border-primary/10 bg-background shadow-sm">
+              <SelectTrigger className="w-full h-10 rounded-xl text-sm px-4 border border-primary/10 bg-background shadow-sm">
                 <SelectValue placeholder="Select a role..." />
               </SelectTrigger>
-              <SelectContent className="rounded-2xl border border-primary/10">
+              <SelectContent className="rounded-xl border border-primary/10">
                 {options.map((opt) => (
                   <SelectItem key={opt} value={opt}>
                     {opt.charAt(0).toUpperCase() + opt.slice(1)}
@@ -503,7 +503,7 @@ export default function PageEditor() {
               value={effectiveVal === 'custom' ? '' : effectiveVal}
               onChange={(e) => handleChange(e.target.value)}
               placeholder="Enter custom role"
-              className="h-14 rounded-2xl text-base md:text-lg px-4 md:px-6 border-primary/10 bg-background shadow-sm flex-1 min-w-[150px] animate-in fade-in duration-300"
+              className="h-10 rounded-xl text-sm px-4 border-primary/10 bg-background shadow-sm flex-1 min-w-[150px] animate-in fade-in duration-300"
             />
           )}
           
@@ -519,7 +519,7 @@ export default function PageEditor() {
                   handleChange('custom');
                 }
               }}
-              className="h-14 w-full sm:w-14 rounded-2xl border-primary/10 bg-background text-lg flex items-center justify-center font-bold text-primary shadow-sm hover:bg-primary/10 transition-colors shrink-0"
+              className="h-10 w-full sm:w-10 rounded-xl border-primary/10 bg-background text-sm flex items-center justify-center font-bold text-primary shadow-sm hover:bg-primary/10 transition-colors shrink-0"
               title={(isCustomValue || effectiveVal === 'custom') ? "Cancel Custom Role" : "Add Custom Role"}
             >
               {(isCustomValue || effectiveVal === 'custom') ? '✖' : '+'}
@@ -664,7 +664,8 @@ export default function PageEditor() {
           <div className="absolute top-32 -right-20 w-[300px] h-[300px] bg-primary/[0.03] rounded-full blur-[100px]" />
           <div className="absolute bottom-32 -left-20 w-[250px] h-[250px] bg-accent/[0.05] rounded-full blur-[100px]" />
         </div>
-        <header className="flex min-h-16 h-auto py-3 md:py-0 md:h-20 shrink-0 items-center gap-2 md:gap-4 border-b border-primary/10 bg-background/50 backdrop-blur-xl px-3 md:px-8 sticky top-0 z-50 transition-all duration-300">
+        <header className="flex min-h-16 h-auto py-3 md:py-0 md:h-16 shrink-0 items-center gap-2 md:gap-4 border-b border-primary/10 bg-background/50 backdrop-blur-xl px-3 md:px-8 sticky top-0 z-50 transition-all duration-300">
+          <SidebarTrigger className="-ml-1 mr-1 shrink-0" />
           <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-2xl hover:bg-primary/10 shrink-0">
             <ArrowLeft className="h-5 w-5" />
           </Button>
@@ -745,8 +746,8 @@ export default function PageEditor() {
                       )}
                     </CardHeader>
                     
-                    <CardContent className="p-4 md:p-10">
-                      <div className="grid gap-6 md:gap-10 lg:grid-cols-2 w-full min-w-0">
+                    <CardContent className="p-4 md:p-6">
+                      <div className="grid gap-4 md:gap-6 lg:grid-cols-2 w-full min-w-0">
                         {section.fields.map(field => {
                           const val = content[section.key]?.[field.key] || '';
                           
