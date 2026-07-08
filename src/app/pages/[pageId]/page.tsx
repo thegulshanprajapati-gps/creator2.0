@@ -470,7 +470,7 @@ export default function PageEditor() {
       const isCustomValue = effectiveVal && !options.includes(effectiveVal);
       
       return (
-        <div className="flex gap-2 items-center w-full">
+        <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center w-full">
           <div className="relative flex-1">
             <Select
               value={isCustomValue ? 'custom' : (effectiveVal || undefined)}
@@ -482,7 +482,7 @@ export default function PageEditor() {
                 }
               }}
             >
-              <SelectTrigger className="w-full h-14 rounded-2xl text-lg px-6 border border-primary/10 bg-background shadow-sm">
+              <SelectTrigger className="w-full h-14 rounded-2xl text-base md:text-lg px-4 md:px-6 border border-primary/10 bg-background shadow-sm">
                 <SelectValue placeholder="Select a role..." />
               </SelectTrigger>
               <SelectContent className="rounded-2xl border border-primary/10">
@@ -503,7 +503,7 @@ export default function PageEditor() {
               value={effectiveVal === 'custom' ? '' : effectiveVal}
               onChange={(e) => handleChange(e.target.value)}
               placeholder="Enter custom role"
-              className="h-14 rounded-2xl text-lg px-6 border-primary/10 bg-background shadow-sm w-64 animate-in fade-in slide-in-from-right-5 duration-300"
+              className="h-14 rounded-2xl text-base md:text-lg px-4 md:px-6 border-primary/10 bg-background shadow-sm flex-1 min-w-[150px] animate-in fade-in duration-300"
             />
           )}
           
@@ -519,7 +519,7 @@ export default function PageEditor() {
                   handleChange('custom');
                 }
               }}
-              className="h-14 w-14 rounded-2xl border-primary/10 bg-background text-lg flex items-center justify-center font-bold text-primary shadow-sm hover:bg-primary/10 transition-colors"
+              className="h-14 w-full sm:w-14 rounded-2xl border-primary/10 bg-background text-lg flex items-center justify-center font-bold text-primary shadow-sm hover:bg-primary/10 transition-colors shrink-0"
               title={(isCustomValue || effectiveVal === 'custom') ? "Cancel Custom Role" : "Add Custom Role"}
             >
               {(isCustomValue || effectiveVal === 'custom') ? '✖' : '+'}
@@ -695,16 +695,16 @@ export default function PageEditor() {
 
         <main className="p-3 md:p-8 max-w-7xl mx-auto space-y-6 md:space-y-10 relative z-10">
            <Tabs defaultValue={defaultTab} className="space-y-8">
-            <TabsList className="bg-muted/40 p-1 md:p-1.5 h-auto md:h-16 rounded-xl md:rounded-[2rem] flex flex-nowrap w-full items-center gap-1 md:gap-2 border border-primary/5 shadow-inner overflow-x-auto">
+            <TabsList className="bg-muted/40 p-1 md:p-1.5 !h-auto rounded-xl md:rounded-2xl flex flex-nowrap w-full items-center justify-start gap-1 md:gap-1.5 border border-primary/5 shadow-inner overflow-x-auto scrollbar-none py-1.5">
               {schemas.map(section => (
-                <TabsTrigger key={section.key} value={section.key} className="flex-shrink-0 md:flex-1 min-w-fit md:min-w-[120px] rounded-xl md:rounded-2xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-md transition-all py-2 md:py-2.5 px-3 md:px-4 whitespace-nowrap h-9 md:h-12 flex items-center justify-center text-xs md:text-sm">
+                <TabsTrigger key={section.key} value={section.key} className="font-sans flex-shrink-0 rounded-lg md:rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-md transition-all py-1.5 md:py-2 px-3 md:px-4 whitespace-nowrap h-8 md:h-10 flex items-center justify-center text-xs md:text-sm">
                   {section.label}
                 </TabsTrigger>
               ))}
-              <TabsTrigger value="preview" className="flex-shrink-0 md:flex-1 min-w-fit md:min-w-[120px] rounded-xl md:rounded-2xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-md transition-all py-2 md:py-2.5 px-3 md:px-4 whitespace-nowrap h-9 md:h-12 flex items-center justify-center text-xs md:text-sm">
+              <TabsTrigger value="preview" className="font-sans flex-shrink-0 rounded-lg md:rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-md transition-all py-1.5 md:py-2 px-3 md:px-4 whitespace-nowrap h-8 md:h-10 flex items-center justify-center text-xs md:text-sm">
                 Live Preview
               </TabsTrigger>
-              <TabsTrigger value="assets" className="flex-shrink-0 md:flex-1 min-w-fit md:min-w-[120px] rounded-xl md:rounded-2xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-md transition-all py-2 md:py-2.5 px-3 md:px-4 whitespace-nowrap h-9 md:h-12 flex items-center justify-center text-xs md:text-sm">
+              <TabsTrigger value="assets" className="font-sans flex-shrink-0 rounded-lg md:rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-md transition-all py-1.5 md:py-2 px-3 md:px-4 whitespace-nowrap h-8 md:h-10 flex items-center justify-center text-xs md:text-sm">
                 Global Assets
               </TabsTrigger>
             </TabsList>
@@ -732,9 +732,9 @@ export default function PageEditor() {
                       </div>
                       {section.key === 'seo' && (
                         <Button 
-                          onClick={handleGenerateSeo} 
-                          disabled={generatingSeo} 
-                          className="bg-primary/95 text-primary-foreground font-bold shadow-md hover:bg-primary rounded-xl flex items-center gap-2 px-5 h-11 transition-all"
+                           onClick={handleGenerateSeo} 
+                           disabled={generatingSeo} 
+                           className="bg-primary/95 text-primary-foreground font-bold shadow-md hover:bg-primary rounded-xl flex items-center gap-2 px-5 h-11 transition-all"
                         >
                           {generatingSeo ? (
                             <><Loader2 className="h-4 w-4 animate-spin" /> Generating...</>
@@ -746,7 +746,7 @@ export default function PageEditor() {
                     </CardHeader>
                     
                     <CardContent className="p-4 md:p-10">
-                      <div className="grid gap-6 md:gap-10 lg:grid-cols-2">
+                      <div className="grid gap-6 md:gap-10 lg:grid-cols-2 w-full min-w-0">
                         {section.fields.map(field => {
                           const val = content[section.key]?.[field.key] || '';
                           
@@ -754,13 +754,13 @@ export default function PageEditor() {
                             const listData = parseList(val);
                             
                             return (
-                              <div key={field.key} className="space-y-6 col-span-full border border-primary/10 rounded-3xl p-8 bg-background shadow-sm">
-                                <div className="flex items-center justify-between border-b pb-4">
+                              <div key={field.key} className="space-y-6 col-span-full border border-primary/10 rounded-2xl sm:rounded-3xl p-4 sm:p-8 bg-background shadow-sm">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4">
                                   <div>
-                                    <h3 className="font-headline text-xl font-bold">{field.label}</h3>
-                                    <p className="text-sm text-muted-foreground mt-1">Manage multiple items. Drag or reorder them.</p>
+                                    <h3 className="font-headline text-lg sm:text-xl font-bold">{field.label}</h3>
+                                    <p className="text-xs sm:text-sm text-muted-foreground mt-1">Manage multiple items. Reorder them below.</p>
                                   </div>
-                                  <Button onClick={() => handleAddListItem(section.key, field.key, field.itemFields!)} variant="secondary" className="rounded-xl shadow-sm font-bold px-5">
+                                  <Button onClick={() => handleAddListItem(section.key, field.key, field.itemFields!)} variant="secondary" className="rounded-xl shadow-sm font-bold px-5 w-full sm:w-auto">
                                     <Plus className="h-4 w-4 mr-2" /> Add Item
                                   </Button>
                                 </div>
@@ -773,27 +773,28 @@ export default function PageEditor() {
                                 ) : (
                                   <div className="space-y-6">
                                     {listData.map((item: any, idx: number) => (
-                                      <div key={idx} className="relative group border border-border rounded-2xl p-6 bg-muted/10 transition-colors hover:border-primary/30">
-                                        <div className="absolute -left-3 top-6 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                          <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full shadow-sm" onClick={() => handleMoveListItem(section.key, field.key, idx, -1)} disabled={idx === 0}>
-                                            <ChevronUp className="h-4 w-4" />
-                                          </Button>
-                                          <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full shadow-sm" onClick={() => handleMoveListItem(section.key, field.key, idx, 1)} disabled={idx === listData.length - 1}>
-                                            <ChevronDown className="h-4 w-4" />
-                                          </Button>
-                                        </div>
-                                        
-                                        <div className="flex justify-between items-center mb-6">
-                                          <Badge variant="outline" className="font-bold">Item {idx + 1}</Badge>
+                                      <div key={idx} className="relative group border border-border rounded-xl sm:rounded-2xl p-4 sm:p-6 bg-muted/10 transition-colors hover:border-primary/30">
+                                        <div className="flex justify-between items-center mb-6 flex-wrap gap-2">
+                                          <div className="flex items-center gap-2">
+                                            <Badge variant="outline" className="font-bold">Item {idx + 1}</Badge>
+                                            <div className="flex items-center gap-0.5 border border-primary/5 rounded-lg bg-background/50 p-0.5 shadow-sm">
+                                              <Button size="icon" variant="ghost" className="h-7 w-7 rounded" onClick={() => handleMoveListItem(section.key, field.key, idx, -1)} disabled={idx === 0} title="Move Up">
+                                                <ChevronUp className="h-4 w-4" />
+                                              </Button>
+                                              <Button size="icon" variant="ghost" className="h-7 w-7 rounded" onClick={() => handleMoveListItem(section.key, field.key, idx, 1)} disabled={idx === listData.length - 1} title="Move Down">
+                                                <ChevronDown className="h-4 w-4" />
+                                              </Button>
+                                            </div>
+                                          </div>
                                           <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10 rounded-xl h-8 w-8" onClick={() => handleRemoveListItem(section.key, field.key, idx)}>
                                             <Trash2 className="h-4 w-4" />
                                           </Button>
                                         </div>
                                         
-                                        <div className="grid gap-6 md:grid-cols-2">
+                                        <div className="grid gap-4 md:grid-cols-2">
                                           {field.itemFields!.map(subField => (
-                                            <div key={subField.key} className={`space-y-3 ${subField.type === 'richtext' || subField.type === 'textarea' ? 'col-span-full' : ''}`}>
-                                              <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">{subField.label}</Label>
+                                            <div key={subField.key} className={`space-y-2 w-full min-w-0 ${subField.type === 'richtext' || subField.type === 'textarea' ? 'col-span-full' : ''}`}>
+                                              <Label className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground ml-0.5">{subField.label}</Label>
                                               {renderField(subField, section.key, item[subField.key] || '', idx, subField.key, field.key)}
                                             </div>
                                           ))}
@@ -816,10 +817,10 @@ export default function PageEditor() {
                             const mobileVal = mobileField ? (content[section.key]?.[mobileField.key] || '') : '';
                             
                             return (
-                              <div key={field.key} className="space-y-4 w-full min-w-0 col-span-full border border-primary/10 rounded-3xl p-6 bg-background shadow-sm">
-                                <div className="flex items-center justify-between border-b pb-4 mb-2">
-                                  <Label className="text-base font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 ml-1">Hero Section Assets</Label>
-                                  <div className="w-60">
+                              <div key={field.key} className="space-y-4 w-full min-w-0 col-span-full border border-primary/10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 bg-background shadow-sm">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-4 mb-2 gap-3">
+                                  <Label className="text-sm sm:text-base font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 ml-1">Hero Section Assets</Label>
+                                  <div className="w-full sm:w-60">
                                     <Select value={selectedAssetType} onValueChange={(v: 'desktop' | 'mobile') => setSelectedAssetType(v)}>
                                       <SelectTrigger className="w-full h-11 rounded-xl border border-primary/10 bg-background shadow-sm">
                                         <SelectValue />
