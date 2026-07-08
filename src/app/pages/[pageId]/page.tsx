@@ -706,7 +706,7 @@ export default function PageEditor() {
                   {saving ? (
                     <><Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> Saving</>
                   ) : (
-                    <><Save className="mr-1 h-3.5 w-3.5" /> Publish Changes</>
+                    <><Save className="mr-1 h-3.5 w-3.5" /> Save</>
                   )}
                 </Button>
               </motion.div>
