@@ -702,11 +702,11 @@ export default function PageEditor() {
             </div>
             <div className="flex items-center gap-2 justify-end shrink-0">
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="shrink-0">
-                <Button size="sm" onClick={saveContent} disabled={saving || dbStatus === 'error' || schemas.length === 0} className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 font-bold px-4 h-10 transition-all text-xs md:text-sm">
+                <Button size="icon" onClick={saveContent} disabled={saving || dbStatus === 'error' || schemas.length === 0} className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 flex items-center justify-center w-10 h-10 shrink-0 transition-all" title="Save Changes">
                   {saving ? (
-                    <><Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> Saving</>
+                    <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    <><Save className="mr-1 h-3.5 w-3.5" /> Save</>
+                    <Save className="h-4 w-4" />
                   )}
                 </Button>
               </motion.div>
