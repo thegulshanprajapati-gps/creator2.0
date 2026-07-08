@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Loader2, Image as ImageIcon, Search, FileText } from 'lucide-react';
+import { Loader2, Image as ImageIcon, Search, FileText, Upload } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 interface ImagePickerProps {
@@ -16,6 +16,7 @@ export function ImagePicker({ onSelect, trigger }: ImagePickerProps) {
   const [assets, setAssets] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -35,6 +36,33 @@ export function ImagePicker({ onSelect, trigger }: ImagePickerProps) {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const uploadForm = new FormData();
+      uploadForm.append('file', file);
+      uploadForm.append('asset_type', 'image');
+
+      const response = await fetch('/api/cloudinary-upload', {
+        method: 'POST',
+        body: uploadForm,
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Cloudinary upload failed.');
+
+      const fileUrl = data.secure_url || data.url || '';
+      onSelect(fileUrl);
+      setOpen(false);
+    } catch (err: any) {
+      alert(err.message || String(err));
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -59,14 +87,41 @@ export function ImagePicker({ onSelect, trigger }: ImagePickerProps) {
             </div>
             Asset Library Picker
           </DialogTitle>
-          <div className="relative mt-4">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search assets by name..." 
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 rounded-xl border-border bg-background"
-            />
+          <div className="flex flex-col sm:flex-row gap-3 mt-4 items-stretch sm:items-center">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input 
+                placeholder="Search assets by name..." 
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-9 rounded-xl border-border bg-background h-10"
+              />
+            </div>
+            <div className="shrink-0">
+              <input
+                id="modal-upload-input"
+                type="file"
+                accept="image/*"
+                onChange={handleUpload}
+                className="hidden"
+                disabled={uploading}
+              />
+              <Button asChild variant="secondary" className="rounded-xl h-10 w-full sm:w-auto font-bold border border-primary/10">
+                <label htmlFor="modal-upload-input" className="cursor-pointer flex items-center justify-center gap-2">
+                  {uploading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                      Uploading...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="h-4 w-4 text-primary" />
+                      Upload New
+                    </>
+                  )}
+                </label>
+              </Button>
+            </div>
           </div>
         </DialogHeader>
         

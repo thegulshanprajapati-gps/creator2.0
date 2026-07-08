@@ -614,17 +614,28 @@ export default function PageEditor() {
               value={imgData.url}
               onChange={(e) => updateImgData('url', e.target.value)}
               placeholder="Image URL"
-              className="flex-1 h-12 rounded-xl text-sm"
+              className="flex-1 h-10 rounded-xl text-sm px-4"
             />
             <ImagePicker 
               onSelect={(url) => updateImgData('url', url)} 
               trigger={
-                <Button variant="outline" className="h-12 px-4 rounded-xl border-border bg-muted/20 hover:bg-muted/50">
-                  <Library className="h-5 w-5 mr-2 text-primary" />
+                <Button variant="outline" className="h-10 px-4 rounded-xl border-border bg-muted/20 hover:bg-muted/50 font-bold shrink-0">
+                  <Library className="h-4.5 w-4.5 mr-1.5 text-primary" />
                   Library
                 </Button>
               }
             />
+            {imgData.url && (
+              <Button 
+                variant="destructive" 
+                onClick={() => updateImgData('url', '')} 
+                className="h-10 px-4 rounded-xl font-bold shrink-0"
+                title="Clear selected image"
+              >
+                <Trash2 className="h-4.5 w-4.5 mr-1.5" />
+                Clear
+              </Button>
+            )}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="space-y-1.5">
