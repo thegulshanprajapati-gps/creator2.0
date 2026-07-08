@@ -664,30 +664,32 @@ export default function PageEditor() {
           <div className="absolute top-32 -right-20 w-[300px] h-[300px] bg-primary/[0.03] rounded-full blur-[100px]" />
           <div className="absolute bottom-32 -left-20 w-[250px] h-[250px] bg-accent/[0.05] rounded-full blur-[100px]" />
         </div>
-        <header className="flex h-16 shrink-0 items-center gap-2 md:gap-4 border-b border-primary/10 bg-background/50 backdrop-blur-xl px-3 md:px-8 sticky top-0 z-50 transition-all duration-300">
-          <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-2xl hover:bg-primary/10">
+        <header className="flex min-h-16 h-auto py-3 md:py-0 md:h-20 shrink-0 items-center gap-2 md:gap-4 border-b border-primary/10 bg-background/50 backdrop-blur-xl px-3 md:px-8 sticky top-0 z-50 transition-all duration-300">
+          <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-2xl hover:bg-primary/10 shrink-0">
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <div className="flex-1 flex items-center justify-between">
-            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
-              <h1 className="font-headline font-bold text-lg md:text-2xl tracking-tight text-foreground">
+          <div className="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-3 min-w-0">
+            <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-3 min-w-0">
+              <h1 className="font-headline font-bold text-base md:text-xl tracking-tight text-foreground truncate">
                 Editing <span className="text-primary capitalize">{pageSlug}</span>
               </h1>
-              <div className="flex gap-2 items-center">
-                {dbStatus === 'checking' && <Badge variant="outline" className="text-muted-foreground"><Loader2 className="h-3 w-3 mr-1 animate-spin"/> Connecting...</Badge>}
-                {dbStatus === 'active' && <Badge className="bg-emerald-500/10 text-emerald-500 border-none shadow-sm rounded-xl px-3 font-semibold"><CheckCircle2 className="h-3 w-3 mr-1"/> MongoDB Active</Badge>}
-                {dbStatus === 'error' && <Badge className="bg-destructive/10 text-destructive border-none shadow-sm rounded-xl px-3 font-semibold"><AlertTriangle className="h-3 w-3 mr-1"/> DB Offline</Badge>}
+              <div className="flex gap-2 items-center flex-wrap">
+                {dbStatus === 'checking' && <Badge variant="outline" className="text-muted-foreground text-[10px] md:text-xs"><Loader2 className="h-3 w-3 mr-1 animate-spin"/> Connecting...</Badge>}
+                {dbStatus === 'active' && <Badge className="bg-emerald-500/10 text-emerald-500 border-none shadow-sm rounded-xl px-2.5 py-0.5 font-semibold text-[10px] md:text-xs"><CheckCircle2 className="h-3 w-3 mr-1"/> MongoDB Active</Badge>}
+                {dbStatus === 'error' && <Badge className="bg-destructive/10 text-destructive border-none shadow-sm rounded-xl px-2.5 py-0.5 font-semibold text-[10px] md:text-xs"><AlertTriangle className="h-3 w-3 mr-1"/> DB Offline</Badge>}
               </div>
             </div>
-            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Button size="sm" onClick={saveContent} disabled={saving || dbStatus === 'error' || schemas.length === 0} className="rounded-xl md:rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 font-bold px-3 md:px-6 h-9 md:h-12 transition-all text-xs md:text-sm">
-                {saving ? (
-                  <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Saving to DB...</>
-                ) : (
-                  <><Save className="mr-2 h-5 w-5" /> Publish Changes</>
-                )}
-              </Button>
-            </motion.div>
+            <div className="flex items-center gap-3 justify-start md:justify-end flex-wrap shrink-0">
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Button size="sm" onClick={saveContent} disabled={saving || dbStatus === 'error' || schemas.length === 0} className="rounded-xl md:rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 font-bold px-3 md:px-5 h-9 md:h-11 transition-all text-xs md:text-sm">
+                  {saving ? (
+                    <><Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> Saving...</>
+                  ) : (
+                    <><Save className="mr-1.5 h-4 w-4" /> Publish Changes</>
+                  )}
+                </Button>
+              </motion.div>
+            </div>
           </div>
         </header>
 
