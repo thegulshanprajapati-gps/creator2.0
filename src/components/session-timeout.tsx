@@ -105,27 +105,28 @@ export function SessionTimeout() {
   // Render the header widget
   const renderHeaderWidget = () => {
     return (
-      <div className="flex items-center gap-2 md:gap-3 bg-neutral-950 border border-neutral-800 text-neutral-200 px-3 py-1.5 rounded-full font-mono text-[12px] md:text-sm tracking-tight shadow-lg select-none">
-        <Clock className="h-3.5 w-3.5 text-neutral-400 animate-pulse" />
+      <div className="group flex items-center gap-1.5 bg-neutral-950 border border-neutral-800 text-neutral-200 px-2.5 py-1.5 rounded-full font-mono text-[11px] md:text-xs tracking-tight shadow-lg select-none shrink-0 transition-all duration-300 hover:border-neutral-700">
+        <Clock className="h-3.5 w-3.5 text-neutral-400 animate-pulse shrink-0" />
         <span className="font-bold text-white tracking-wider">{formatTime(timeLeft)}</span>
-        <span className="text-neutral-700">|</span>
-        <button
-          onClick={() => subtractTime(1)}
-          className="hover:text-red-400 font-bold transition-colors duration-200 px-1"
-          title="Subtract 1 Minute"
-        >
-          -1M
-        </button>
-        <span className="text-neutral-700">|</span>
-        <button
-          onClick={() => addTime(5)}
-          className="hover:text-emerald-400 font-bold transition-colors duration-200 px-1"
-          title="Add 5 Minutes"
-        >
-          +5M
-        </button>
-        <span className="text-neutral-700">|</span>
-        <Timer className="h-3.5 w-3.5 text-neutral-400" />
+        
+        {/* Animated Slide-out Adjustment Controls */}
+        <div className="flex items-center w-0 overflow-hidden opacity-0 group-hover:w-[72px] group-hover:opacity-100 transition-all duration-300 ease-in-out gap-1.5 ml-0 group-hover:ml-1.5 border-l border-neutral-800 pl-0 group-hover:pl-1.5 shrink-0">
+          <button
+            onClick={() => subtractTime(1)}
+            className="hover:text-red-400 font-extrabold transition-colors duration-200 text-[10px]"
+            title="Subtract 1 Minute"
+          >
+            -1M
+          </button>
+          <span className="text-neutral-800 text-[10px]">|</span>
+          <button
+            onClick={() => addTime(5)}
+            className="hover:text-emerald-400 font-extrabold transition-colors duration-200 text-[10px]"
+            title="Add 5 Minutes"
+          >
+            +5M
+          </button>
+        </div>
       </div>
     );
   };
