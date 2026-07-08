@@ -36,11 +36,11 @@ export default function AnalyticsPage() {
     <SidebarProvider>
       <AdminSidebar />
       <SidebarInset className="bg-muted/10">
-        <header className="flex h-16 shrink-0 items-center gap-4 border-b bg-background px-6">
+        <header className="flex min-h-16 h-auto py-2 shrink-0 items-center gap-4 border-b bg-background px-4 md:px-6 sticky top-0 z-50">
           <SidebarTrigger />
-          <div>
-            <h1 className="font-headline font-bold text-xl">Database Analytics</h1>
-            <p className="text-xs text-muted-foreground font-medium">Real-time collections distribution & performance</p>
+          <div className="min-w-0">
+            <h1 className="font-headline font-bold text-base md:text-xl truncate">Database Analytics</h1>
+            <p className="text-[10px] md:text-xs text-muted-foreground font-medium truncate">Real-time collections distribution & performance</p>
           </div>
         </header>
 

@@ -210,30 +210,30 @@ export default function SupportDashboard() {
             <div className="absolute bottom-20 right-0 w-[350px] h-[350px] bg-accent/[0.06] rounded-full blur-[120px]" />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/[0.02] rounded-full blur-[150px]" />
           </div>
-          <header className="flex h-16 shrink-0 items-center gap-2 md:gap-4 border-b bg-background/60 backdrop-blur-xl px-3 md:px-6 sticky top-0 z-50">
-            <SidebarTrigger className="-ml-2" />
-            <div className="flex-1 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <h1 className="font-headline font-bold text-base md:text-xl tracking-tight text-foreground">Admin Console v2.0</h1>
-                <Badge variant="outline" className="text-[10px] h-5 bg-muted/5 text-foreground border-muted/20 font-bold uppercase hidden sm:inline-flex">System: Nominal</Badge>
+          <header className="flex min-h-16 h-auto py-2 md:py-0 md:h-16 shrink-0 items-center gap-2 md:gap-4 border-b bg-background/60 backdrop-blur-xl px-3 md:px-6 sticky top-0 z-50 transition-all duration-300">
+            <SidebarTrigger className="-ml-2 shrink-0" />
+            <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2 min-w-0">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <h1 className="font-headline font-bold text-sm md:text-xl tracking-tight text-foreground truncate">Admin Console v2.0</h1>
+                <Badge variant="outline" className="text-[9px] md:text-[10px] h-5 bg-muted/5 text-foreground border-muted/20 font-bold uppercase shrink-0">System: Nominal</Badge>
               </div>
-              <div className="flex items-center gap-3">
-                <Button variant="ghost" size="icon" className="rounded-full">
+              <div className="flex items-center gap-2 md:gap-3 justify-end shrink-0">
+                <Button variant="ghost" size="icon" className="rounded-full shrink-0">
                   <Bell className="h-4 w-4" />
                 </Button>
-                <div className="h-4 w-px bg-border" />
+                <div className="h-4 w-px bg-border shrink-0" />
                 <Button 
                   size="sm" 
                   onClick={handleInitializeUpdate} 
                   disabled={isUpdatingSitemap}
-                  className="bg-muted text-foreground shadow-lg shadow-muted/20 font-bold text-xs md:text-sm"
+                  className="bg-muted text-foreground shadow-lg shadow-muted/20 font-bold text-xs md:text-sm shrink-0"
                 >
                   {isUpdatingSitemap ? (
-                    <Loader2 className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4 animate-spin" />
+                    <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />
                   ) : (
-                    <Zap className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" />
+                    <Zap className="mr-1 h-3.5 w-3.5" />
                   )}
-                  <span className="hidden sm:inline">{isUpdatingSitemap ? 'Updating...' : 'Initialize Update'}</span>
+                  <span>{isUpdatingSitemap ? 'Updating...' : 'Update'}</span>
                 </Button>
               </div>
             </div>
