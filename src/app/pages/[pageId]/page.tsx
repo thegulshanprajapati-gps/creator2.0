@@ -82,6 +82,13 @@ export default function PageEditor() {
 
   const schemas: SectionSchema[] = PAGE_SCHEMAS[pageSlug] || [];
   const defaultTab = schemas.length > 0 ? schemas[0].key : 'preview';
+  const [activeTab, setActiveTab] = useState(defaultTab);
+
+  useEffect(() => {
+    if (defaultTab) {
+      setActiveTab(defaultTab);
+    }
+  }, [defaultTab]);
 
   useEffect(() => {
     if (!pageSlug) return;
@@ -664,29 +671,31 @@ export default function PageEditor() {
           <div className="absolute top-32 -right-20 w-[300px] h-[300px] bg-primary/[0.03] rounded-full blur-[100px]" />
           <div className="absolute bottom-32 -left-20 w-[250px] h-[250px] bg-accent/[0.05] rounded-full blur-[100px]" />
         </div>
-        <header className="flex min-h-16 h-auto py-3 md:py-0 md:h-16 shrink-0 items-center gap-2 md:gap-4 border-b border-primary/10 bg-background/50 backdrop-blur-xl px-3 md:px-8 sticky top-0 z-50 transition-all duration-300">
-          <SidebarTrigger className="-ml-1 mr-1 shrink-0" />
-          <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-2xl hover:bg-primary/10 shrink-0">
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
+        <header className="flex min-h-16 h-auto py-3 md:py-0 md:h-16 shrink-0 items-center gap-2 border-b border-primary/10 bg-background/50 backdrop-blur-xl px-3 md:px-6 sticky top-0 z-50 transition-all duration-300">
+          <div className="flex items-center gap-1.5 shrink-0">
+            <SidebarTrigger className="-ml-1" />
+            <Button variant="ghost" size="icon" onClick={() => router.back()} className="h-9 w-9 rounded-xl hover:bg-primary/10 shrink-0">
+              <ArrowLeft className="h-4.5 w-4.5" />
+            </Button>
+          </div>
           <div className="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-3 min-w-0">
-            <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-3 min-w-0">
-              <h1 className="font-headline font-bold text-base md:text-xl tracking-tight text-foreground truncate">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2.5 min-w-0">
+              <h1 className="font-headline font-bold text-sm md:text-lg tracking-tight text-foreground truncate">
                 Editing <span className="text-primary capitalize">{pageSlug}</span>
               </h1>
-              <div className="flex gap-2 items-center flex-wrap">
-                {dbStatus === 'checking' && <Badge variant="outline" className="text-muted-foreground text-[10px] md:text-xs"><Loader2 className="h-3 w-3 mr-1 animate-spin"/> Connecting...</Badge>}
-                {dbStatus === 'active' && <Badge className="bg-emerald-500/10 text-emerald-500 border-none shadow-sm rounded-xl px-2.5 py-0.5 font-semibold text-[10px] md:text-xs"><CheckCircle2 className="h-3 w-3 mr-1"/> MongoDB Active</Badge>}
-                {dbStatus === 'error' && <Badge className="bg-destructive/10 text-destructive border-none shadow-sm rounded-xl px-2.5 py-0.5 font-semibold text-[10px] md:text-xs"><AlertTriangle className="h-3 w-3 mr-1"/> DB Offline</Badge>}
+              <div className="flex gap-1.5 items-center flex-wrap">
+                {dbStatus === 'checking' && <Badge variant="outline" className="text-muted-foreground text-[9px] md:text-[10px] h-5"><Loader2 className="h-3 w-3 mr-1 animate-spin"/> Connecting</Badge>}
+                {dbStatus === 'active' && <Badge className="bg-emerald-500/10 text-emerald-500 border-none shadow-sm rounded-lg px-2 py-0.5 font-bold text-[9px] md:text-[10px] h-5"><CheckCircle2 className="h-3 w-3 mr-1"/> MongoDB Active</Badge>}
+                {dbStatus === 'error' && <Badge className="bg-destructive/10 text-destructive border-none shadow-sm rounded-lg px-2 py-0.5 font-bold text-[9px] md:text-[10px] h-5"><AlertTriangle className="h-3 w-3 mr-1"/> DB Offline</Badge>}
               </div>
             </div>
-            <div className="flex items-center gap-3 justify-start md:justify-end flex-wrap shrink-0">
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                <Button size="sm" onClick={saveContent} disabled={saving || dbStatus === 'error' || schemas.length === 0} className="rounded-xl md:rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 font-bold px-3 md:px-5 h-9 md:h-11 transition-all text-xs md:text-sm">
+            <div className="flex items-center gap-2 justify-end flex-wrap sm:flex-nowrap shrink-0">
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="shrink-0">
+                <Button size="sm" onClick={saveContent} disabled={saving || dbStatus === 'error' || schemas.length === 0} className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 font-bold px-4 h-10 transition-all text-xs md:text-sm">
                   {saving ? (
-                    <><Loader2 className="mr-1.5 h-4 w-4 animate-spin" /> Saving...</>
+                    <><Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> Saving</>
                   ) : (
-                    <><Save className="mr-1.5 h-4 w-4" /> Publish Changes</>
+                    <><Save className="mr-1 h-3.5 w-3.5" /> Publish Changes</>
                   )}
                 </Button>
               </motion.div>
@@ -695,8 +704,25 @@ export default function PageEditor() {
         </header>
 
         <main className="p-3 md:p-8 max-w-7xl mx-auto space-y-6 md:space-y-10 relative z-10">
-           <Tabs defaultValue={defaultTab} className="space-y-8">
-            <TabsList className="bg-muted/40 p-1 md:p-1.5 !h-auto rounded-xl md:rounded-2xl flex flex-nowrap w-full items-center justify-start gap-1 md:gap-1.5 border border-primary/5 shadow-inner overflow-x-auto scrollbar-none py-1.5">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+            <div className="sm:hidden w-full">
+              <Select value={activeTab} onValueChange={setActiveTab}>
+                <SelectTrigger className="w-full h-11 rounded-xl border border-primary/10 bg-background shadow-sm font-bold">
+                  <SelectValue placeholder="Select section..." />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl border border-primary/10">
+                  {schemas.map(section => (
+                    <SelectItem key={section.key} value={section.key} className="font-bold">
+                      {section.label}
+                    </SelectItem>
+                  ))}
+                  <SelectItem value="preview" className="font-bold">Live Preview</SelectItem>
+                  <SelectItem value="assets" className="font-bold">Global Assets</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <TabsList className="hidden sm:flex bg-muted/40 p-1 md:p-1.5 !h-auto rounded-xl md:rounded-2xl flex-nowrap w-full items-center justify-start gap-1 md:gap-1.5 border border-primary/5 shadow-inner overflow-x-auto scrollbar-none py-1.5">
               {schemas.map(section => (
                 <TabsTrigger key={section.key} value={section.key} className="font-sans flex-shrink-0 rounded-lg md:rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-md transition-all py-1.5 md:py-2 px-3 md:px-4 whitespace-nowrap h-8 md:h-10 flex items-center justify-center text-xs md:text-sm">
                   {section.label}
