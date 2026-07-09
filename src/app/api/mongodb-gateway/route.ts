@@ -48,7 +48,8 @@ const EDITOR_FORBIDDEN_WRITE_COLLECTIONS = [
 export async function POST(req: NextRequest) {
   const cookieHeader = req.headers.get('cookie');
   const cookies = parseCookies(cookieHeader);
-  const accessToken = cookies[COOKIE_ACCESS_TOKEN];
+  const accessToken = req.cookies.get(COOKIE_ACCESS_TOKEN)?.value || req.cookies.get('access_token')?.value || cookies[COOKIE_ACCESS_TOKEN] || cookies['access_token'];
+  const csrfCookie = req.cookies.get(COOKIE_CSRF)?.value || req.cookies.get('csrf_token')?.value || cookies[COOKIE_CSRF] || cookies['csrf_token'];
   const internalSecret = req.headers.get(INTERNAL_SECRET_HEADER);
   const isInternalCall = internalSecret === INTERNAL_SECRET;
 
@@ -132,7 +133,7 @@ export async function POST(req: NextRequest) {
   // ── CSRF validation for writes ─────────────────────────────────────────────
   if (isWrite && !isInternalCall) {
     const csrfResult = validateCsrf({
-      cookieToken: cookies[COOKIE_CSRF],
+      cookieToken: csrfCookie,
       headerToken: req.headers.get('x-csrf-token'),
       origin: req.headers.get('origin'),
       referer: req.headers.get('referer'),
