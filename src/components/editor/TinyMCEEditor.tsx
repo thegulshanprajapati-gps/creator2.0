@@ -58,17 +58,12 @@ export default function TinyMCEEditor({ value, onChange, placeholder, className 
             'charmap', 'code', 'codesample', 'directionality', 'emoticons', 'fullscreen',
             'help', 'image', 'importcss', 'insertdatetime', 'link', 'lists', 'media',
             'nonbreaking', 'pagebreak', 'preview', 'quickbars', 'save', 'searchreplace',
-            'table', 'visualblocks', 'visualchars', 'wordcount',
-            
-            // Premium plugins - Selected for CMS & Blogging
-            'tableofcontents',  // Auto-indexes structure to build navigation tables for blogs
-            'footnotes',        // Adds references and academic citations within publications
-            'importword'        // Imports Microsoft Word documents directly without format breakage
+            'table', 'visualblocks', 'visualchars', 'wordcount'
           ],
           toolbar: 'undo redo | blocks fontfamily | ' +
             'bold italic underline strikethrough forecolor backcolor | alignleft aligncenter ' +
             'alignright alignjustify | bullist numlist outdent indent | ' +
-            'table image link media | footnotes tableofcontents importword removeformat code | fullscreen',
+            'table image link media | removeformat code | fullscreen',
           content_style: 'body { font-family:Inter,Helvetica,Arial,sans-serif; font-size:14px }',
           font_family_formats: fontFormats,
           skin: theme === 'dark' ? 'oxide-dark' : 'oxide',
