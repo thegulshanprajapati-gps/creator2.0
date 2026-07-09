@@ -89,7 +89,7 @@ export default function TiptapEditor({ value, onChange, placeholder, className }
   const colorRef = useRef<HTMLDivElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
 
-  // Close color pickers on click outside
+  // Close color pickers on click outside + Load Google Fonts for editor preview
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (colorRef.current && !colorRef.current.contains(event.target as Node)) {
@@ -100,7 +100,20 @@ export default function TiptapEditor({ value, onChange, placeholder, className }
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+
+    // Dynamic Google Fonts loader
+    const linkId = 'google-fonts-editor-loader';
+    if (!document.getElementById(linkId)) {
+      const link = document.createElement('link');
+      link.id = linkId;
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?family=Abel&family=Abril+Fatface&family=Alfa+Slab+One&family=Alice&family=Amatic+SC&family=Anonymous+Pro&family=Archivo+Black&family=Arimo&family=Arizonia&family=Arvo&family=Asap&family=Assistant&family=Barlow&family=Bitter&family=Bree+Serif&family=Bricolage+Grotesque&family=Bungee&family=Cabin&family=Cardo&family=Caveat&family=Chivo&family=Cinzel&family=Comfortaa&family=Cormorant+Garamond&family=Courgette&family=Courier+Prime&family=Crimson+Text&family=Dancing+Script&family=DM+Sans&family=DM+Serif+Display&family=Domine&family=Dosis&family=EB+Garamond&family=Exo+2&family=Fira+Code&family=Fira+Sans&family=Fredoka&family=Garamond&family=Geist&family=Georgia&family=Gloria+Hallelujah&family=Gochi+Hand&family=Great+Vibes&family=Heebo&family=Hind&family=IBM+Plex+Mono&family=IBM+Plex+Sans&family=Inconsolata&family=Indie+Flower&family=Inter&family=JetBrains+Mono&family=Josefin+Sans&family=Kanit&family=Karla&family=Kaushan+Script&family=Lato&family=League+Script&family=Lexend&family=Libre+Baskerville&family=Libre+Franklin&family=Lobster&family=Lora&family=Lustria&family=Manrope&family=Maven+Pro&family=Merriweather&family=Montserrat&family=Mukta&family=Neuton&family=Noto+Sans&family=Noto+Serif&family=Nunito&family=Open+Sans&family=Oswald&family=Outfit&family=Overpass&family=Pacifico&family=Parisienne&family=Permanent+Marker&family=Playfair+Display&family=Plus+Jakarta+Sans&family=Poppins&family=Press+Start+2P&family=Quicksand&family=Raleway&family=Righteous&family=Roboto&family=Roboto+Mono&family=Sacramento&family=Satisfy&family=Space+Grotesk&family=Special+Elite&family=Spectral&family=Tangerine&family=Titan+One&family=Ubuntu&family=Urbanist&family=Varela+Round&family=Work+Sans&family=Yellowtail&family=Yeseva+One&display=swap';
+      document.head.appendChild(link);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   const allFontsList = [
@@ -300,16 +313,40 @@ export default function TiptapEditor({ value, onChange, placeholder, className }
               <Palette className="h-4 w-4" />
             </Button>
             {showColorPicker && (
-              <div className="absolute top-full left-0 mt-1 p-2 bg-popover border border-border rounded-xl shadow-xl z-50 grid grid-cols-5 gap-1 min-w-[120px]">
-                {PRESET_COLORS.map(color => (
-                  <button
-                    key={color}
-                    type="button"
-                    className="w-5 h-5 rounded-full border border-border transition-transform hover:scale-110"
-                    style={{ backgroundColor: color }}
-                    onClick={() => setTextColor(color)}
+              <div className="absolute top-full left-0 mt-1 p-2 bg-popover border border-border rounded-xl shadow-xl z-50 flex flex-col gap-2 min-w-[140px]">
+                <div className="grid grid-cols-5 gap-1">
+                  {PRESET_COLORS.map(color => (
+                    <button
+                      key={color}
+                      type="button"
+                      className="w-5 h-5 rounded-full border border-border transition-transform hover:scale-110 cursor-pointer"
+                      style={{ backgroundColor: color }}
+                      onClick={() => setTextColor(color)}
+                    />
+                  ))}
+                </div>
+                <div className="flex items-center gap-1 border-t border-border pt-1.5 mt-0.5">
+                  <input
+                    type="color"
+                    className="w-5.5 h-5.5 rounded cursor-pointer border border-border p-0 bg-transparent shrink-0"
+                    onChange={(e) => editor.chain().focus().setColor(e.target.value).run()}
+                    title="Custom Color Picker"
                   />
-                ))}
+                  <input
+                    type="text"
+                    placeholder="#hex"
+                    className="w-full text-[9px] h-5.5 px-1 border border-border rounded bg-transparent text-foreground placeholder:text-muted-foreground outline-none font-mono"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        const val = (e.target as HTMLInputElement).value;
+                        if (/^#[0-9A-F]{6}$/i.test(val) || /^#[0-9A-F]{3}$/i.test(val)) {
+                          editor.chain().focus().setColor(val).run();
+                          setShowColorPicker(false);
+                        }
+                      }
+                    }}
+                  />
+                </div>
               </div>
             )}
           </div>
