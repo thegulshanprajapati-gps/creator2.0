@@ -28,6 +28,7 @@ import {
 import { ImagePicker } from '@/components/admin/image-picker';
 
 // Custom TextStyle extension to support Font Size
+// Custom TextStyle extension to support Font Size, Font Family, and Color
 const CustomTextStyle = TextStyle.extend({
   addAttributes() {
     return {
@@ -41,6 +42,30 @@ const CustomTextStyle = TextStyle.extend({
           }
           return {
             style: `font-size: ${attributes.fontSize}`,
+          };
+        },
+      },
+      fontFamily: {
+        default: null,
+        parseHTML: element => element.style.fontFamily?.replace(/['"]/g, ''),
+        renderHTML: attributes => {
+          if (!attributes.fontFamily) {
+            return {};
+          }
+          return {
+            style: `font-family: ${attributes.fontFamily}`,
+          };
+        },
+      },
+      color: {
+        default: null,
+        parseHTML: element => element.style.color,
+        renderHTML: attributes => {
+          if (!attributes.color) {
+            return {};
+          }
+          return {
+            style: `color: ${attributes.color}`,
           };
         },
       },
