@@ -49,6 +49,20 @@ export const PAGE_SCHEMAS: Record<string, SectionSchema[]> = {
             { key: 'value', label: 'Stat Value (e.g. 50K+)', type: 'text' },
             { key: 'label', label: 'Stat Label (e.g. Active Learners)', type: 'text' }
           ]
+        },
+        {
+          key: 'carouselSlides',
+          label: 'Mobile Hero Carousel Slides (Phone View Only)',
+          type: 'list',
+          itemFields: [
+            { key: 'badge', label: 'Badge Text (e.g. BUILD & SHIP)', type: 'text' },
+            { key: 'title', label: 'Slide Title', type: 'text' },
+            { key: 'subtitle', label: 'Slide Subtitle / Description', type: 'textarea' },
+            { key: 'ctaText', label: 'CTA Button Text', type: 'text' },
+            { key: 'ctaLink', label: 'CTA Redirect Route (e.g. /courses)', type: 'text' },
+            { key: 'colorStyle', label: 'Color Style', type: 'select', options: ['primary', 'indigo', 'emerald'] },
+            { key: 'image', label: 'Slide Image Asset', type: 'image' }
+          ]
         }
       ]
     },
