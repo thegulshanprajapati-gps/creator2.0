@@ -810,7 +810,7 @@ export default function PageEditor() {
                           const val = content[section.key]?.[field.key] || '';
                           
                           if (section.key === 'hero') {
-                            const isMobileField = field.key === 'mobileImage' || field.key === 'carouselSlides';
+                            const isMobileField = field.key === 'carouselSlides';
                             if (heroViewType === 'desktop' && isMobileField) return null;
                             if (heroViewType === 'mobile' && !isMobileField) return null;
                           }
@@ -871,11 +871,11 @@ export default function PageEditor() {
                               </div>
                             );
                           }
-                          if (field.key === 'mobileImage' || field.key === 'image') {
+                          if (field.key === 'image') {
                             return (
                               <div key={field.key} className="space-y-2 w-full min-w-0 col-span-full border border-primary/10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 bg-background shadow-sm">
                                 <Label className="text-sm sm:text-base font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 ml-1">{field.label}</Label>
-                                <p className="text-xs text-muted-foreground ml-1 mb-4">Configure the image shown on {field.key === 'mobileImage' ? 'mobile phones' : 'desktop computers'}.</p>
+                                <p className="text-xs text-muted-foreground ml-1 mb-4">Configure the primary image shown in this section.</p>
                                 {renderField(field, section.key, val)}
                               </div>
                             );
