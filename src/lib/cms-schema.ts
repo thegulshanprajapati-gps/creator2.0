@@ -35,10 +35,12 @@ export const PAGE_SCHEMAS: Record<string, SectionSchema[]> = {
         { key: 'subtitle', label: 'Hero Subtitle', type: 'richtext', placeholder: 'XmartyCreator helps creators learn...' },
         { key: 'subtitleDarkColor', label: 'Subtitle Color (Dark Mode)', type: 'text', placeholder: 'e.g. #cbd5e1' },
         { key: 'image', label: 'Hero Asset', type: 'image' },
-        { key: 'mobileImage', label: 'Mobile Hero Asset', type: 'image' },
-        { key: 'primaryCta', label: 'Primary Button', type: 'text', placeholder: 'Explore Courses' },
-        { key: 'secondaryCta', label: 'Secondary Button', type: 'text', placeholder: 'Join Community' },
-        { key: 'loginCta', label: 'Login Button', type: 'text', placeholder: 'Login / Register' },
+        { key: 'primaryCta', label: 'Primary Button Text', type: 'text', placeholder: 'Explore Courses' },
+        { key: 'primaryCtaLink', label: 'Primary Button Link', type: 'text', placeholder: '/courses' },
+        { key: 'secondaryCta', label: 'Secondary Button Text', type: 'text', placeholder: 'Join Community' },
+        { key: 'secondaryCtaLink', label: 'Secondary Button Link', type: 'text', placeholder: '/community' },
+        { key: 'loginCta', label: 'Login Button Text', type: 'text', placeholder: 'Login / Register' },
+        { key: 'loginCtaLink', label: 'Login Button Link', type: 'text', placeholder: '/login' },
         { key: 'imageBadgeTitle', label: 'Hero Image Badge Title', type: 'text', placeholder: 'Vasant AI Mentor' },
         { key: 'imageBadgeSubtitle', label: 'Hero Image Badge Subtitle', type: 'text', placeholder: 'Always-on help for your learning path.' },
         { 
@@ -325,12 +327,44 @@ export const PAGE_SCHEMAS: Record<string, SectionSchema[]> = {
   ],
   contact: [
     {
-      key: 'info',
-      label: 'Contact Information',
-      description: 'Contact details shown on the contact page.',
+      key: 'hero',
+      label: 'Contact Hero',
+      description: 'The top section of the Contact page.',
       fields: [
-        { key: 'email', label: 'Support Email', type: 'text' },
-        { key: 'address', label: 'Office Address', type: 'richtext' }
+        { key: 'badge', label: 'Badge Text', type: 'text', placeholder: 'Get In Touch' },
+        { key: 'title', label: 'Hero Title', type: 'richtext', placeholder: 'How can we help?' },
+        { key: 'subtitle', label: 'Hero Subtitle', type: 'textarea', placeholder: 'Our orchestration support team...' }
+      ]
+    },
+    {
+      key: 'info',
+      label: 'Platform Channels Heading',
+      description: 'Heading for the contact channels section.',
+      fields: [
+        { key: 'heading', label: 'Heading Title', type: 'text', placeholder: 'Platform Channels' },
+        { key: 'sub', label: 'Heading Subtitle', type: 'textarea', placeholder: 'Have direct questions regarding course catalogs...' }
+      ]
+    },
+    {
+      key: 'channels',
+      label: 'Contact Channels',
+      description: 'The specific contact channels.',
+      fields: [
+        { key: 'emailVal', label: 'Support Email Address', type: 'text', placeholder: 'hello@xmartycreator.com' },
+        { key: 'emailDesc', label: 'Support Email Description', type: 'text', placeholder: 'Fast replies within 2-hour cycles.' },
+        { key: 'phoneVal', label: 'Phone Number', type: 'text', placeholder: '+91 98765 43210' },
+        { key: 'phoneDesc', label: 'Phone Description', type: 'text', placeholder: 'Available Mon-Fri (IST).' },
+        { key: 'addressVal', label: 'Office Address', type: 'text', placeholder: 'Silicon Valley, Tech Hub Tower' },
+        { key: 'addressDesc', label: 'Office Description', type: 'text', placeholder: 'Central AI management operations.' }
+      ]
+    },
+    {
+      key: 'ai',
+      label: 'AI Agent Info',
+      description: 'Information about the AI Agent in the contact section.',
+      fields: [
+        { key: 'title', label: 'AI Agent Title', type: 'text', placeholder: 'Vasant AI Agent' },
+        { key: 'sub', label: 'AI Agent Subtitle', type: 'text', placeholder: 'Active 24/7. Monitoring ports.' }
       ]
     },
     {
@@ -341,6 +375,28 @@ export const PAGE_SCHEMAS: Record<string, SectionSchema[]> = {
         { key: 'title', label: 'Meta Title', type: 'text', placeholder: 'Contact Us - XmartyCreator' },
         { key: 'description', label: 'Meta Description', type: 'textarea', placeholder: 'Get in touch with the XmartyCreator support and admissions team.' },
         { key: 'keywords', label: 'Meta Keywords', type: 'text', placeholder: 'contact, support, help, email, address' }
+      ]
+    }
+  ],
+  megaquizzes: [
+    {
+      key: 'hero',
+      label: 'Mega Quizzes Hero',
+      description: 'Configure the landing content for Mega Quizzes.',
+      fields: [
+        { key: 'title', label: 'Main Title', type: 'text', placeholder: 'Xmarty Mega Live Quiz' },
+        { key: 'description', label: 'Description', type: 'textarea', placeholder: 'Register for the upcoming premium live assessment tracks...' },
+        { key: 'bannerUrl', label: 'Banner Image', type: 'image' }
+      ]
+    },
+    {
+      key: 'seo',
+      label: 'SEO Metadata',
+      description: 'Configure SEO metadata for the Mega Quizzes page.',
+      fields: [
+        { key: 'title', label: 'Meta Title', type: 'text', placeholder: 'Mega Quizzes - XmartyCreator' },
+        { key: 'description', label: 'Meta Description', type: 'textarea', placeholder: 'Register for the upcoming premium live assessment tracks.' },
+        { key: 'keywords', label: 'Meta Keywords', type: 'text', placeholder: 'mega quiz, live assessment, coding test' }
       ]
     }
   ],

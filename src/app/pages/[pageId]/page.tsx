@@ -34,7 +34,7 @@ export default function PageEditor() {
   const [imageUploading, setImageUploading] = useState<Record<string, boolean>>({});
   const [previewWidth, setPreviewWidth] = useState('100%');
   const [generatingSeo, setGeneratingSeo] = useState(false);
-  const [selectedAssetType, setSelectedAssetType] = useState<'desktop' | 'mobile'>('desktop');
+  const [heroViewType, setHeroViewType] = useState<'desktop' | 'mobile'>('desktop');
   const [saveProgress, setSaveProgress] = useState(0);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
   const [saveErrorMessage, setSaveErrorMessage] = useState('');
@@ -784,10 +784,37 @@ export default function PageEditor() {
                     </CardHeader>
                     
                     <CardContent className="p-4 md:p-6">
+                      {section.key === 'hero' && (
+                        <div className="mb-8 border border-primary/10 rounded-[2rem] p-4 bg-muted/30">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div>
+                              <Label className="text-base sm:text-lg font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 ml-2">Hero Section View</Label>
+                              <p className="text-xs text-muted-foreground ml-2 mt-1">Configure content specific to Desktop or Mobile screens.</p>
+                            </div>
+                            <div className="w-full sm:w-64">
+                              <Select value={heroViewType} onValueChange={(v: 'desktop' | 'mobile') => setHeroViewType(v)}>
+                                <SelectTrigger className="w-full h-12 rounded-xl border border-primary/20 bg-background shadow-sm font-bold">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent className="rounded-xl border border-primary/10">
+                                  <SelectItem value="desktop" className="font-medium">🖥️ Desktop View</SelectItem>
+                                  <SelectItem value="mobile" className="font-medium">📱 Mobile View</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                       <div className="grid gap-4 md:gap-6 lg:grid-cols-2 w-full min-w-0">
                         {section.fields.map(field => {
                           const val = content[section.key]?.[field.key] || '';
                           
+                          if (section.key === 'hero') {
+                            const isMobileField = field.key === 'mobileImage' || field.key === 'carouselSlides';
+                            if (heroViewType === 'desktop' && isMobileField) return null;
+                            if (heroViewType === 'mobile' && !isMobileField) return null;
+                          }
+
                           if (field.type === 'list' && field.itemFields) {
                             const listData = parseList(val);
                             
@@ -844,45 +871,12 @@ export default function PageEditor() {
                               </div>
                             );
                           }
-                          if (field.key === 'mobileImage') {
-                            // Skip rendering since we group it inside the 'image' field
-                            return null;
-                          }
-
-                          if (field.key === 'image') {
-                            const mobileField = section.fields.find(f => f.key === 'mobileImage');
-                            const desktopVal = content[section.key]?.[field.key] || '';
-                            const mobileVal = mobileField ? (content[section.key]?.[mobileField.key] || '') : '';
-                            
+                          if (field.key === 'mobileImage' || field.key === 'image') {
                             return (
-                              <div key={field.key} className="space-y-4 w-full min-w-0 col-span-full border border-primary/10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 bg-background shadow-sm">
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-4 mb-2 gap-3">
-                                  <Label className="text-sm sm:text-base font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 ml-1">Hero Section Assets</Label>
-                                  <div className="w-full sm:w-60">
-                                    <Select value={selectedAssetType} onValueChange={(v: 'desktop' | 'mobile') => setSelectedAssetType(v)}>
-                                      <SelectTrigger className="w-full h-11 rounded-xl border border-primary/10 bg-background shadow-sm">
-                                        <SelectValue />
-                                      </SelectTrigger>
-                                      <SelectContent className="rounded-xl border border-primary/10">
-                                        <SelectItem value="desktop">🖥️ Desktop View Asset</SelectItem>
-                                        <SelectItem value="mobile">📱 Phone View Asset</SelectItem>
-                                      </SelectContent>
-                                    </Select>
-                                  </div>
-                                </div>
-                                {selectedAssetType === 'desktop' ? (
-                                  <div className="space-y-2">
-                                    <p className="text-xs text-muted-foreground ml-1">Configure the image shown on Desktop computers.</p>
-                                    {renderField(field, section.key, desktopVal)}
-                                  </div>
-                                ) : (
-                                  mobileField && (
-                                    <div className="space-y-2">
-                                      <p className="text-xs text-muted-foreground ml-1">Configure the background image shown on mobile phones.</p>
-                                      {renderField(mobileField, section.key, mobileVal)}
-                                    </div>
-                                  )
-                                )}
+                              <div key={field.key} className="space-y-2 w-full min-w-0 col-span-full border border-primary/10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 bg-background shadow-sm">
+                                <Label className="text-sm sm:text-base font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 ml-1">{field.label}</Label>
+                                <p className="text-xs text-muted-foreground ml-1 mb-4">Configure the image shown on {field.key === 'mobileImage' ? 'mobile phones' : 'desktop computers'}.</p>
+                                {renderField(field, section.key, val)}
                               </div>
                             );
                           }
