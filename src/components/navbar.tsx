@@ -42,6 +42,9 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center gap-4">
+            <Link href="/community-chat" className="text-sm font-medium text-primary hover:text-primary/80">
+              Community Chat
+            </Link>
             <Link href="/pages/home" className="text-sm font-medium text-muted-foreground hover:text-foreground">
               Pages
             </Link>
