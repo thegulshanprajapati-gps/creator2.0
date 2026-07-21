@@ -46,8 +46,9 @@ export const PAGE_SCHEMAS: Record<string, SectionSchema[]> = {
           label: 'Hero Statistics', 
           type: 'list',
           itemFields: [
-            { key: 'value', label: 'Stat Value (e.g. 50K+)', type: 'text' },
-            { key: 'label', label: 'Stat Label (e.g. Active Learners)', type: 'text' }
+            { key: 'metric', label: 'Stat Metric (e.g. 19,332+)', type: 'text' },
+            { key: 'subtitle', label: 'Stat Subtitle (e.g. Happy Students)', type: 'text' },
+            { key: 'icon', label: 'Icon Name (Users, BookOpen, Video, Award)', type: 'select', options: ['Users', 'BookOpen', 'Video', 'Award'] }
           ]
         },
         {
@@ -136,7 +137,16 @@ export const PAGE_SCHEMAS: Record<string, SectionSchema[]> = {
         { key: 'badgeBorderRadius', label: 'Badge Border Radius', type: 'select', options: ['full', 'xl', 'lg', 'md', 'none'] },
         { key: 'heading', label: 'Community Heading', type: 'richtext', placeholder: 'You do not learn alone here.' },
         { key: 'subtitle', label: 'Community Subtitle', type: 'richtext', placeholder: 'Get discussions, live reviews, creator circles...' },
-        { key: 'cta', label: 'Explore Community Link Text', type: 'text', placeholder: 'Explore Community' }
+        { key: 'cta', label: 'Explore Community Link Text', type: 'text', placeholder: 'Explore Community' },
+        { 
+          key: 'features', 
+          label: 'Community Features List', 
+          type: 'list',
+          itemFields: [
+            { key: 'label', label: 'Feature Name (e.g. Daily discussions)', type: 'text' },
+            { key: 'icon', label: 'Icon Name (e.g. MessageSquare, BadgeCheck)', type: 'select', options: ['MessageSquare', 'BadgeCheck', 'GraduationCap', 'Users', 'Star'] }
+          ]
+        }
       ]
     },
     {
