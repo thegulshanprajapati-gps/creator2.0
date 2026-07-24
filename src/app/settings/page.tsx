@@ -9,7 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useConfirm } from "@/components/ui/confirm-dialog";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, Settings, Save, RefreshCcw, Palette, Type, Trash2 } from "lucide-react";
+import { Loader2, Settings, Save, RefreshCcw, Palette, Type, Trash2, Smartphone, GripVertical, Home, Info, BookOpen, Users, Newspaper, User } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { useCMS } from "@/components/cms-provider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { GOOGLE_FONTS_LIST } from "@/lib/font-list";
@@ -34,6 +35,18 @@ export default function SystemSettingsPage() {
   const [instagramUrl, setInstagramUrl] = useState('');
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [whatsappUrl, setWhatsappUrl] = useState('');
+  const [loginEnabled, setLoginEnabled] = useState(true);
+
+  const defaultNavOrder = [
+    { id: 'home', label: 'Home' },
+    { id: 'about', label: 'About' },
+    { id: 'courses', label: 'Courses' },
+    { id: 'community', label: 'Community' },
+    { id: 'blog', label: 'Blog' },
+    { id: 'login', label: 'Login / Profile' },
+  ];
+  const [navOrder, setNavOrder] = useState(defaultNavOrder);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
 
   const allAvailableFonts = [
     "Times New Roman",
@@ -55,6 +68,10 @@ export default function SystemSettingsPage() {
         setInstagramUrl(data.settings.instagram_url || '');
         setYoutubeUrl(data.settings.youtube_url || '');
         setWhatsappUrl(data.settings.whatsapp_url || '');
+        setLoginEnabled(data.settings.login_enabled ?? true);
+        if (data.settings.nav_order && Array.isArray(data.settings.nav_order)) {
+          setNavOrder(data.settings.nav_order);
+        }
       }
     } catch (e) {
       console.error(e);
@@ -76,7 +93,7 @@ export default function SystemSettingsPage() {
     return () => {
       window.removeEventListener('settings-save', handleSaveTrigger);
     };
-  }, [siteName, primaryColor, secondaryColor, headingsFont, bodyFont, themeMode, instagramUrl, youtubeUrl, whatsappUrl]);
+  }, [siteName, primaryColor, secondaryColor, headingsFont, bodyFont, themeMode, instagramUrl, youtubeUrl, whatsappUrl, loginEnabled, navOrder]);
 
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,6 +130,8 @@ export default function SystemSettingsPage() {
           instagram_url: instagramUrl,
           youtube_url: youtubeUrl,
           whatsapp_url: whatsappUrl,
+          login_enabled: loginEnabled,
+          nav_order: navOrder,
         })
       });
       clearInterval(progressTimer);
@@ -349,6 +368,71 @@ export default function SystemSettingsPage() {
                       >
                         Dark Mode
                       </Button>
+                    </div>
+                  </div>
+
+                  {/* ── Mobile Navigation Config ── */}
+                  <div className="border border-slate-200 dark:border-slate-800 p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 space-y-4">
+                    <div className="flex items-center gap-2 text-amber-500">
+                      <Smartphone className="h-5 w-5" />
+                      <Label className="font-bold text-sm">Mobile Bottom Navigation</Label>
+                    </div>
+
+                    {/* Login toggle */}
+                    <div className="flex items-center justify-between rounded-xl bg-background border border-slate-200 dark:border-slate-700 p-4">
+                      <div>
+                        <p className="text-sm font-semibold">Show Login / Profile Tab</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">When disabled, the Login tab disappears from the bottom bar</p>
+                      </div>
+                      <Switch
+                        checked={loginEnabled}
+                        onCheckedChange={setLoginEnabled}
+                        id="login-enabled-toggle"
+                      />
+                    </div>
+
+                    {/* Drag-to-reorder */}
+                    <div className="space-y-2">
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Drag to reorder tabs</p>
+                      <div className="space-y-2">
+                        {navOrder.map((item) => (
+                          <div
+                            key={item.id}
+                            draggable
+                            onDragStart={(e) => e.dataTransfer.setData('text/plain', item.id)}
+                            onDragOver={(e) => { e.preventDefault(); setDragOverId(item.id); }}
+                            onDragLeave={() => setDragOverId(null)}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              setDragOverId(null);
+                              const fromId = e.dataTransfer.getData('text/plain');
+                              if (fromId === item.id) return;
+                              setNavOrder(prev => {
+                                const arr = [...prev];
+                                const fromIdx = arr.findIndex(x => x.id === fromId);
+                                const toIdx = arr.findIndex(x => x.id === item.id);
+                                const [moved] = arr.splice(fromIdx, 1);
+                                arr.splice(toIdx, 0, moved);
+                                return arr;
+                              });
+                            }}
+                            className={`flex items-center gap-3 rounded-xl border p-3 cursor-grab active:cursor-grabbing bg-background transition-all select-none ${
+                              dragOverId === item.id ? 'border-amber-400 bg-amber-50 dark:bg-amber-950/20 scale-[1.01]' : 'border-slate-200 dark:border-slate-700'
+                            }`}
+                          >
+                            <GripVertical className="h-4 w-4 text-muted-foreground shrink-0" />
+                            <span className="text-sm font-medium flex-1">{item.label}</span>
+                            {item.id === 'login' && (
+                              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                loginEnabled ? 'bg-green-100 text-green-700 dark:bg-green-900/30' : 'bg-rose-100 text-rose-700 dark:bg-rose-900/30'
+                              }`}>
+                                {loginEnabled ? 'Enabled' : 'Disabled'}
+                              </span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-[11px] text-muted-foreground">Note: When Login is disabled, it will be hidden regardless of position.</p>
                     </div>
                   </div>
 

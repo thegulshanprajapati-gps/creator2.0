@@ -66,6 +66,8 @@ export async function POST(req: Request) {
       cert_layout_completion: payload.cert_layout_completion || null,
       cert_layout_participation: payload.cert_layout_participation || null,
       cert_layout_locked: payload.cert_layout_locked ?? false,
+      login_enabled: payload.login_enabled ?? true,
+      nav_order: payload.nav_order || null,
       updated_at: new Date()
     };
 
