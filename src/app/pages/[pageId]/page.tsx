@@ -803,6 +803,8 @@ export default function PageEditor() {
                               </Select>
                             </div>
                           </div>
+                        </div>
+                      )}
                       {section.key === 'hero' && heroViewType === 'mobile' && (
                         <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs font-semibold col-span-full">
                           Note: The main heading, description, buttons, and stats are shared automatically between Desktop and Mobile. You are configuring the mobile-specific image asset below.
