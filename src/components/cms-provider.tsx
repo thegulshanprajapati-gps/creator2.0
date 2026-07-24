@@ -62,7 +62,7 @@ const defaultSettings = {
   themeMode: 'light',
   primaryColor: '#FF0000',
   secondaryColor: '#FF0000',
-  siteName: 'XmartyCreator',
+  siteName: 'Xmarty Creator',
   headingsFont: 'Times New Roman',
   bodyFont: 'Times New Roman',
 };

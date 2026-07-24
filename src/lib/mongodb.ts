@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'development') {
 
 export default clientPromise;
 
-export async function getDb(dbName = 'xmartycreator') {
+export async function getDb(dbName = 'xmarty') {
   const conn = await clientPromise;
   return conn.db(dbName);
 }

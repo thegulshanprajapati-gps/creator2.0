@@ -9,7 +9,7 @@ export async function GET() {
     let settings: any = await db.collection('site_settings').findOne({}, { sort: { updated_at: -1 } });
     if (!settings) {
       settings = {
-        site_name: 'XmartyCreator',
+        site_name: 'Xmarty Creator',
         primary_color: '#FF0000',
         secondary_color: '#FF0000',
         theme_settings: { themeMode: 'light' }
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     const payload = await req.json();
 
     const updateDoc: any = {
-      site_name: payload.site_name || 'XmartyCreator',
+      site_name: payload.site_name || 'Xmarty Creator',
       primary_color: payload.primary_color || '#FF0000',
       secondary_color: payload.secondary_color || '#FF0000',
       headings_font: payload.headings_font || 'Times New Roman',

@@ -27,7 +27,7 @@ const connections: ConnectionStatus[] = [
     status: 'disconnected',
     service: 'mongodb',
     description: 'Primary Document Database containing profiles, assessments, course structures, and system telemetry.',
-    config: 'mongodb+srv://xmartydb.mongodb.net/xmartycreator',
+    config: 'mongodb+srv://xmartydb.mongodb.net/Xmarty Creator',
     envVars: ['MONGODB_URI'],
     tips: [
       'Check MONGODB_URI starts with mongodb+srv://',
@@ -52,7 +52,7 @@ const connections: ConnectionStatus[] = [
     status: 'disconnected',
     service: 'cloudinary',
     description: 'Cloud storage and dynamic delivery system for image uploads, PDF attachments, and video assets.',
-    config: 'cloudinary://xmartycreator',
+    config: 'cloudinary://Xmarty Creator',
     envVars: ['NEXT_PUBLIC_CLOUDINARY_URL', 'NEXT_PUBLIC_CLOUDINARY_GALLERY_URL'],
     tips: [
       'Ensure NEXT_PUBLIC_CLOUDINARY_URL starts with cloudinary://',

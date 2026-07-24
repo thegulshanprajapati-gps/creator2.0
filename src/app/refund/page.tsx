@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Refund Policy • XmartyCreator',
-  description: 'Refund Policy for XmartyCreator.',
+  title: 'Refund Policy • Xmarty Creator',
+  description: 'Refund Policy for Xmarty Creator.',
 };
 
 export default function RefundPage() {

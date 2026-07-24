@@ -48,7 +48,7 @@ export function PageTransition({
   const getPageName = (path: string) => {
     if (path === '/') return 'HOME';
     const parts = path.split('/').filter(Boolean);
-    if (parts.length === 0) return 'XMARTYCREATOR';
+    if (parts.length === 0) return 'Xmarty Creator';
     return parts[parts.length - 1].toUpperCase();
   };
 

@@ -145,7 +145,7 @@ export default function ThemeSettings() {
 
     try {
       const payload = {
-        site_name: settings?.siteName || 'XmartyCreator',
+        site_name: settings?.siteName || 'Xmarty Creator',
         primary_color: primary,
         secondary_color: primary,
         theme_settings: { themeMode },
@@ -305,7 +305,7 @@ export default function ThemeSettings() {
         <main className="p-4 md:p-8 max-w-4xl mx-auto space-y-12">
           <div className="space-y-4">
             <h2 className="text-3xl md:text-5xl font-headline font-bold tracking-tight">Unified Design Engine</h2>
-            <p className="text-lg text-muted-foreground leading-relaxed">Modify the visual pulse of XmartyCreator. Changes propagate instantly to all student-facing and administrative layers.</p>
+            <p className="text-lg text-muted-foreground leading-relaxed">Modify the visual pulse of Xmarty Creator. Changes propagate instantly to all student-facing and administrative layers.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

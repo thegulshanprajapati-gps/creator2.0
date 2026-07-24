@@ -31,7 +31,7 @@ export async function POST() {
     // Fetch dynamic blog posts (from static default list)
     const blogSlugs = [
       'the-future-of-web-architecture-in-2024',
-      'mastering-the-xmartycreator-workflow',
+      'mastering-the-Xmarty Creator-workflow',
       'why-ai-powered-learning-is-the-new-gold-standard'
     ];
     blogSlugs.forEach(slug => {

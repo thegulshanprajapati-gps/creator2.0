@@ -21,7 +21,7 @@ export async function generateSeoAction(pageSlug: string, sectionsContext?: stri
     throw new Error('Gemini API not found - got it >>');
   }
 
-  const promptText = `You are a professional SEO copywriter. Generate search engine optimization metadata for the webpage: "${pageSlug}" on the XmartyCreator platform. 
+  const promptText = `You are a professional SEO copywriter. Generate search engine optimization metadata for the webpage: "${pageSlug}" on the Xmarty Creator platform. 
 Use the following page context if provided to customize the suggestions:
 "${sectionsContext || ''}"
 

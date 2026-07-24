@@ -26,7 +26,7 @@ export default function SystemSettingsPage() {
   const [saveErrorMessage, setSaveErrorMessage] = useState('');
 
   // Editable variables
-  const [siteName, setSiteName] = useState('XmartyCreator');
+  const [siteName, setSiteName] = useState('Xmarty Creator');
   const [primaryColor, setPrimaryColor] = useState('#FF0000');
   const [secondaryColor, setSecondaryColor] = useState('#FF0000');
   const [themeMode, setThemeMode] = useState<'light' | 'dark'>('light');
@@ -59,7 +59,7 @@ export default function SystemSettingsPage() {
       const res = await fetch('/api/dashboard/settings');
       const data = await res.json();
       if (data.success && data.settings) {
-        setSiteName(data.settings.site_name || 'XmartyCreator');
+        setSiteName(data.settings.site_name || 'Xmarty Creator');
         setPrimaryColor(data.settings.primary_color || '#FF0000');
         setSecondaryColor(data.settings.secondary_color || '#FF0000');
         setThemeMode(data.settings.theme_settings?.themeMode || 'light');
@@ -219,7 +219,7 @@ export default function SystemSettingsPage() {
                       id="site-name" 
                       value={siteName} 
                       onChange={(e) => setSiteName(e.target.value)} 
-                      placeholder="e.g. XmartyCreator"
+                      placeholder="e.g. Xmarty Creator"
                       className="h-12 rounded-xl"
                       required
                     />

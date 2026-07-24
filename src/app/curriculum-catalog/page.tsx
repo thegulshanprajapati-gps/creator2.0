@@ -490,7 +490,7 @@ function CourseEditor({ course, onClose, onSaved }: CourseEditorProps) {
               <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest block">Google Search Preview</span>
               <div className="flex items-center gap-1.5 text-xs text-neutral-500 font-medium">
                 <span className="h-4.5 w-4.5 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center font-bold text-[9px]">G</span>
-                xmartycreator.com › courses › {slug || 'course-url'}
+                Xmarty Creator.com › courses › {slug || 'course-url'}
               </div>
               <h3 className="text-lg font-medium text-[#1a0dab] dark:text-[#8ab4f8] hover:underline cursor-pointer truncate">
                 {metaTitle || title || 'Course Details Title Tag'}

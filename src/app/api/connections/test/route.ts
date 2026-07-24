@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
           const { MongoClient } = require('mongodb');
           const client = new MongoClient(uri, { serverSelectionTimeoutMS: 2000 });
           await client.connect();
-          await client.db('xmartycreator').command({ ping: 1 });
+          await client.db('Xmarty Creator').command({ ping: 1 });
           await client.close();
           const latency = Date.now() - start;
           return NextResponse.json({ status: 'connected', service, latency });

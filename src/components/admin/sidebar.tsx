@@ -115,7 +115,7 @@ export function AdminSidebar() {
 
     try {
       const payload = {
-        site_name: settings?.siteName || 'XmartyCreator',
+        site_name: settings?.siteName || 'Xmarty Creator',
         theme_settings: { themeMode: nextMode },
       };
 

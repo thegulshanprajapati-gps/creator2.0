@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy • XmartyCreator',
-  description: 'Privacy Policy for XmartyCreator.',
+  title: 'Privacy Policy • Xmarty Creator',
+  description: 'Privacy Policy for Xmarty Creator.',
 };
 
 export default function PrivacyPage() {

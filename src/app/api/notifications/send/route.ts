@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
     const publicVapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
     const privateVapidKey = process.env.VAPID_PRIVATE_KEY;
-    const vapidSubject = process.env.VAPID_SUBJECT || 'mailto:admin@xmartycreator.com';
+    const vapidSubject = process.env.VAPID_SUBJECT || 'mailto:admin@Xmarty Creator.com';
 
     if (!publicVapidKey || !privateVapidKey) {
       return NextResponse.json({ error: 'VAPID keys not configured' }, { status: 500 });

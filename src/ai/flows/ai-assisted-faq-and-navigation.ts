@@ -28,7 +28,7 @@ const prompt = ai.definePrompt({
   name: 'assistStudentWithFAQAndNavigationPrompt',
   input: { schema: AssistStudentWithFAQAndNavigationInputSchema },
   output: { schema: AssistStudentWithFAQAndNavigationOutputSchema },
-  prompt: `You are Vasant, the XmartyCreator AI Learning Assistant. Your role is to provide accurate, concise, and helpful answers to student questions about the XmartyCreator platform, available courses, and common technical or navigation issues.
+  prompt: `You are Vasant, the Xmarty Creator AI Learning Assistant. Your role is to provide accurate, concise, and helpful answers to student questions about the Xmarty Creator platform, available courses, and common technical or navigation issues.
 
 Always aim to guide the student efficiently, providing clear instructions or direct answers.
 

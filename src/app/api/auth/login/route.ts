@@ -20,7 +20,7 @@ import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 
 const DOMAIN = 'supportdomain' as const;
-const SUPERADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL || process.env.ADMIN_EMAIL || 'admin@xmartycreator.com';
+const SUPERADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL || process.env.ADMIN_EMAIL || 'admin@Xmarty Creator.com';
 const SUPERADMIN_PASS = process.env.SUPERADMIN_PASSWORD || process.env.ADMIN_PASSWORD || 'XmartyAdmin2024!';
 
 export async function POST(req: NextRequest) {
@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
     }
 
     // ── Super admin hardcoded check ──
-    const isSuperAdmin = email.toLowerCase() === 'admin@xmartycreator.com' || email.toLowerCase() === SUPERADMIN_EMAIL.toLowerCase();
+    const isSuperAdmin = email.toLowerCase() === 'admin@Xmarty Creator.com' || email.toLowerCase() === SUPERADMIN_EMAIL.toLowerCase();
     if (isSuperAdmin) {
       if (password !== SUPERADMIN_PASS) {
         recordLoginFailure(ip);

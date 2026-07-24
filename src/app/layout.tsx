@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     default: "Support Console",
     template: "%s | Support Console"
   },
-  description: "XmartyCreator Administrative Support Console.",
+  description: "Xmarty Creator Administrative Support Console.",
   robots: { index: false, follow: false }
 };
 
@@ -18,7 +18,7 @@ const defaultSettings = {
   themeMode: 'light',
   primaryColor: '#FF0000',
   secondaryColor: '#FF0000',
-  siteName: 'XmartyCreator',
+  siteName: 'Xmarty Creator',
 };
 
 function hexToHslString(hex: string): string {

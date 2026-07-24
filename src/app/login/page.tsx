@@ -173,7 +173,7 @@ function AdminLoginForm() {
               <span className="text-white font-bold text-lg tracking-tighter">XC</span>
             </div>
             <span className="font-headline text-3xl font-bold tracking-tighter text-primary">
-              XmartyCreator
+              Xmarty Creator
             </span>
           </div>
           <h1 className="text-sm font-bold text-muted-foreground uppercase tracking-[0.3em]">
@@ -273,7 +273,7 @@ function AdminLoginForm() {
                     <Input
                       id="email"
                       type="email"
-                      placeholder="admin@xmartycreator.com"
+                      placeholder="admin@Xmarty Creator.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className="h-12 border-2 focus:ring-primary rounded-xl"

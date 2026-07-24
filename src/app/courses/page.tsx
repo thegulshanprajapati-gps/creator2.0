@@ -492,7 +492,7 @@ function CourseEditor({ course, onClose, onSaved }: CourseEditorProps) {
               <div className="font-sans text-left space-y-0.5">
                 <div className="flex items-center gap-1.5 text-xs text-slate-500">
                   <span className="h-4 w-4 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-[9px] font-bold">G</span>
-                  <span>xmartycreator.com › courses › {slug || 'course-slug'}</span>
+                  <span>Xmarty Creator.com › courses › {slug || 'course-slug'}</span>
                 </div>
                 <h3 className="text-base font-medium text-[#1a0dab] dark:text-[#8ab4f8] truncate">
                   {metaTitle || title || 'Course Title'}

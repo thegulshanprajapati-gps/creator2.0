@@ -105,7 +105,7 @@ export default function UsersAdminPage() {
   }, [users]);
 
   const changeRole = async (userId: string, newRole: string) => {
-    const isSuperAdmin = currentUser?.email === 'admin@xmartycreator.com';
+    const isSuperAdmin = currentUser?.email === 'admin@Xmarty Creator.com';
     if (!isSuperAdmin) {
       toast({ variant: 'destructive', title: 'Unauthorized', description: 'Only the Super Admin can modify roles!' });
       return;
@@ -131,7 +131,7 @@ export default function UsersAdminPage() {
   };
 
   const removeUser = async (userId: string) => {
-    const isSuperAdmin = currentUser?.email === 'admin@xmartycreator.com';
+    const isSuperAdmin = currentUser?.email === 'admin@Xmarty Creator.com';
     if (!isSuperAdmin) {
       toast({ variant: 'destructive', title: 'Unauthorized', description: 'Only the Super Admin can delete users!' });
       return;
@@ -193,7 +193,7 @@ export default function UsersAdminPage() {
     }
   };
 
-  const isSuperAdmin = currentUser?.email === 'admin@xmartycreator.com';
+  const isSuperAdmin = currentUser?.email === 'admin@Xmarty Creator.com';
 
   return (
     <SidebarProvider>

@@ -36,7 +36,7 @@ export function Navbar() {
             <Link href="/" className="flex items-center gap-3 group">
               <img src="/logo.png" alt="Logo" className="h-9 w-9 object-contain" />
               <span className="font-headline text-xl font-bold tracking-tight text-foreground/90 group-hover:text-primary transition-colors">
-                XmartyCreator
+                Xmarty Creator
               </span>
             </Link>
           </div>

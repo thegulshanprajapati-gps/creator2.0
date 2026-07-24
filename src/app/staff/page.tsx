@@ -96,7 +96,7 @@ export default function StaffAdminPage() {
     };
   }, []);
 
-  const isSuperAdmin = currentUser?.email === 'admin@xmartycreator.com';
+  const isSuperAdmin = currentUser?.email === 'admin@Xmarty Creator.com';
 
   const handleCreateStaff = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -235,7 +235,7 @@ export default function StaffAdminPage() {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="alex@xmartycreator.com"
+                            placeholder="alex@Xmarty Creator.com"
                             className="w-full h-10 px-3 rounded-lg border bg-background text-xs focus:ring-1 focus:ring-amber-500 outline-none"
                             required
                           />
@@ -324,7 +324,7 @@ export default function StaffAdminPage() {
                         <TableCell className="text-xs">{user.phone}</TableCell>
                         <TableCell className="text-xs">
                            <Select
-                             disabled={!isSuperAdmin || user.email === 'admin@xmartycreator.com'}
+                             disabled={!isSuperAdmin || user.email === 'admin@Xmarty Creator.com'}
                              value={user.role}
                              onValueChange={(val) => changeRole(user.id, val)}
                            >
@@ -347,7 +347,7 @@ export default function StaffAdminPage() {
                               size="sm" 
                               variant="destructive" 
                               className="h-8 text-[10px] font-bold"
-                              disabled={user.email === 'admin@xmartycreator.com'} 
+                              disabled={user.email === 'admin@Xmarty Creator.com'} 
                               onClick={() => removeStaff(user.id)}
                             >
                               Delete

@@ -276,7 +276,7 @@ export default function PlatformUpdatesAdminPage() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               title: formTitle,
-              body: formExcerpt || 'A new update is available on XmartyCreator.',
+              body: formExcerpt || 'A new update is available on Xmarty Creator.',
               url: '/updates'
             })
           });
@@ -346,7 +346,7 @@ export default function PlatformUpdatesAdminPage() {
                         <Input
                           value={formTitle}
                           onChange={(e) => handleTitleChange(e.target.value)}
-                          placeholder="E.g. XmartyCreator V2.4 Launch"
+                          placeholder="E.g. Xmarty Creator V2.4 Launch"
                           required
                         />
                       </div>
@@ -355,7 +355,7 @@ export default function PlatformUpdatesAdminPage() {
                         <Input
                           value={formSlug}
                           onChange={(e) => setFormSlug(e.target.value)}
-                          placeholder="e.g. xmartycreator-v24-launch"
+                          placeholder="e.g. Xmarty Creator-v24-launch"
                           required
                         />
                       </div>

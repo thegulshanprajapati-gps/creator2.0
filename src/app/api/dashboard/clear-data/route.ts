@@ -15,7 +15,7 @@ export async function POST() {
     
     // Reset branding settings
     const defaultBranding = {
-      site_name: 'XmartyCreator',
+      site_name: 'Xmarty Creator',
       primary_color: '#FF0000',
       secondary_color: '#FF0000',
       headings_font: 'Times New Roman',

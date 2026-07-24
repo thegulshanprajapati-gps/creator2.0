@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'FAQ • XmartyCreator',
-  description: 'Frequently asked questions about XmartyCreator.',
+  title: 'FAQ • Xmarty Creator',
+  description: 'Frequently asked questions about Xmarty Creator.',
 };
 
 const faqs = [
   {
-    q: 'What is XmartyCreator?',
-    a: 'XmartyCreator is an enterprise EdTech orchestration platform that helps you ship courses, communities, and learning experiences with premium UI and modern workflows.',
+    q: 'What is Xmarty Creator?',
+    a: 'Xmarty Creator is an enterprise EdTech orchestration platform that helps you ship courses, communities, and learning experiences with premium UI and modern workflows.',
   },
   {
     q: 'Do I need an account to browse?',

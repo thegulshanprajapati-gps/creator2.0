@@ -544,7 +544,7 @@ export function AdvancedCourseEditor({
               <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Google Preview</span>
               <div className="flex items-center gap-1.5 text-xs text-slate-500">
                 <span className="h-4 w-4 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center text-[9px] font-bold">G</span>
-                xmartycreator.com › courses › {slug || 'course-slug'}
+                Xmarty Creator.com › courses › {slug || 'course-slug'}
               </div>
               <h3 className="text-base font-medium text-[#1a0dab] dark:text-[#8ab4f8] truncate">{metaTitle || title || 'Course Title'}</h3>
               <p className="text-xs text-[#4d5156] dark:text-[#bdc1c6] line-clamp-2">{metaDescription || description || 'Add a meta description...'}</p>

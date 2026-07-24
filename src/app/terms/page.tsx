@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Terms of Service • XmartyCreator',
-  description: 'Terms of Service for XmartyCreator.',
+  title: 'Terms of Service • Xmarty Creator',
+  description: 'Terms of Service for Xmarty Creator.',
 };
 
 export default function TermsPage() {
@@ -12,7 +12,7 @@ export default function TermsPage() {
         <header className="space-y-4">
           <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">Terms of Service</h1>
           <p className="text-muted-foreground max-w-2xl">
-            By using XmartyCreator, you agree to these terms. Please read them carefully.
+            By using Xmarty Creator, you agree to these terms. Please read them carefully.
           </p>
         </header>
 

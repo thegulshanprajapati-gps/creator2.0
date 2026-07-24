@@ -32,7 +32,7 @@ export const PAGE_SCHEMAS: Record<string, SectionSchema[]> = {
         { key: 'badgeBorderRadius', label: 'Badge Border Radius', type: 'select', options: ['full', 'xl', 'lg', 'md', 'none'] },
         { key: 'title', label: 'Main Title', type: 'richtext', placeholder: 'Learn skills that actually ship.' },
         { key: 'titleDarkColor', label: 'Title Color (Dark Mode)', type: 'text', placeholder: 'e.g. #ffffff' },
-        { key: 'subtitle', label: 'Hero Subtitle', type: 'richtext', placeholder: 'XmartyCreator helps creators learn...' },
+        { key: 'subtitle', label: 'Hero Subtitle', type: 'richtext', placeholder: 'Xmarty Creator helps creators learn...' },
         { key: 'subtitleDarkColor', label: 'Subtitle Color (Dark Mode)', type: 'text', placeholder: 'e.g. #cbd5e1' },
         { key: 'image', label: 'Hero Asset', type: 'image' },
         { key: 'heroMobileAsset', label: 'Hero Mobile Image Asset', type: 'image', description: 'Upload a specific hero image optimized for mobile devices (phone view).' },
@@ -196,8 +196,8 @@ export const PAGE_SCHEMAS: Record<string, SectionSchema[]> = {
       label: 'SEO Metadata',
       description: 'Configure SEO titles, descriptions, and keywords for search engines.',
       fields: [
-        { key: 'title', label: 'Meta Title', type: 'text', placeholder: 'XmartyCreator - Learn Skills that Actually Ship' },
-        { key: 'description', label: 'Meta Description', type: 'textarea', placeholder: 'XmartyCreator helps creators learn production-grade development, build real projects, and grow with AI guidance.' },
+        { key: 'title', label: 'Meta Title', type: 'text', placeholder: 'Xmarty Creator - Learn Skills that Actually Ship' },
+        { key: 'description', label: 'Meta Description', type: 'textarea', placeholder: 'Xmarty Creator helps creators learn production-grade development, build real projects, and grow with AI guidance.' },
         { key: 'keywords', label: 'Meta Keywords', type: 'text', placeholder: 'edtech, courses, learning paths, AI guidance, engineering' }
       ]
     }
@@ -213,7 +213,7 @@ export const PAGE_SCHEMAS: Record<string, SectionSchema[]> = {
         { key: 'badgeTextColor', label: 'Badge Text Color', type: 'text', placeholder: 'e.g. #FFFFFF' },
         { key: 'badgeBorderColor', label: 'Badge Border Color', type: 'text', placeholder: 'e.g. #FF0000' },
         { key: 'badgeBorderRadius', label: 'Badge Border Radius', type: 'select', options: ['full', 'xl', 'lg', 'md', 'none'] },
-        { key: 'title', label: 'Page Title', type: 'richtext', placeholder: 'About XmartyCreator' },
+        { key: 'title', label: 'Page Title', type: 'richtext', placeholder: 'About Xmarty Creator' },
         { key: 'subtitle', label: 'Subtitle', type: 'richtext' },
         { key: 'image', label: 'Hero Image', type: 'image' }
       ]
@@ -243,7 +243,7 @@ export const PAGE_SCHEMAS: Record<string, SectionSchema[]> = {
         { key: 'badgeBorderColor', label: 'Badge Border Color', type: 'text', placeholder: 'e.g. #FF0000' },
         { key: 'badgeBorderRadius', label: 'Badge Border Radius', type: 'select', options: ['full', 'xl', 'lg', 'md', 'none'] },
         { key: 'name', label: 'Founder Name', type: 'text', placeholder: 'Mukesh Raj' },
-        { key: 'title', label: 'Founder Title', type: 'text', placeholder: 'Founder & CEO, XmartyCreator' },
+        { key: 'title', label: 'Founder Title', type: 'text', placeholder: 'Founder & CEO, Xmarty Creator' },
         { key: 'quote', label: 'Founder Quote', type: 'richtext', placeholder: '"Our mission is simple..."' },
         { key: 'bio', label: 'Founder Bio', type: 'richtext', placeholder: 'Mukesh Raj started...' },
         { key: 'back_text', label: 'Back Face Subtext', type: 'richtext', placeholder: 'We believe tech education is not about memorizing commands...' },
@@ -283,9 +283,9 @@ export const PAGE_SCHEMAS: Record<string, SectionSchema[]> = {
       label: 'SEO Metadata',
       description: 'Configure SEO metadata for the About page.',
       fields: [
-        { key: 'title', label: 'Meta Title', type: 'text', placeholder: 'About Us - XmartyCreator' },
-        { key: 'description', label: 'Meta Description', type: 'textarea', placeholder: 'Learn about XmartyCreator, our story, mission, and how we help creators build real software.' },
-        { key: 'keywords', label: 'Meta Keywords', type: 'text', placeholder: 'about us, mission, story, xmartycreator' }
+        { key: 'title', label: 'Meta Title', type: 'text', placeholder: 'About Us - Xmarty Creator' },
+        { key: 'description', label: 'Meta Description', type: 'textarea', placeholder: 'Learn about Xmarty Creator, our story, mission, and how we help creators build real software.' },
+        { key: 'keywords', label: 'Meta Keywords', type: 'text', placeholder: 'about us, mission, story, Xmarty Creator' }
       ]
     }
   ],
@@ -310,7 +310,7 @@ export const PAGE_SCHEMAS: Record<string, SectionSchema[]> = {
       description: 'Configure SEO metadata for the Curriculum page.',
       fields: [
         { key: 'title', label: 'Meta Title', type: 'text', placeholder: 'Curriculum - Explore Our Courses' },
-        { key: 'description', label: 'Meta Description', type: 'textarea', placeholder: 'Explore the XmartyCreator curriculum. Practical frontend, backend, design and software courses.' },
+        { key: 'description', label: 'Meta Description', type: 'textarea', placeholder: 'Explore the Xmarty Creator curriculum. Practical frontend, backend, design and software courses.' },
         { key: 'keywords', label: 'Meta Keywords', type: 'text', placeholder: 'curriculum, coding courses, next.js, web development' }
       ]
     }
@@ -351,7 +351,7 @@ export const PAGE_SCHEMAS: Record<string, SectionSchema[]> = {
       label: 'Contact Channels',
       description: 'The specific contact channels.',
       fields: [
-        { key: 'emailVal', label: 'Support Email Address', type: 'text', placeholder: 'hello@xmartycreator.com' },
+        { key: 'emailVal', label: 'Support Email Address', type: 'text', placeholder: 'hello@Xmarty Creator.com' },
         { key: 'emailDesc', label: 'Support Email Description', type: 'text', placeholder: 'Fast replies within 2-hour cycles.' },
         { key: 'phoneVal', label: 'Phone Number', type: 'text', placeholder: '+91 98765 43210' },
         { key: 'phoneDesc', label: 'Phone Description', type: 'text', placeholder: 'Available Mon-Fri (IST).' },
@@ -373,8 +373,8 @@ export const PAGE_SCHEMAS: Record<string, SectionSchema[]> = {
       label: 'SEO Metadata',
       description: 'Configure SEO metadata for the Contact page.',
       fields: [
-        { key: 'title', label: 'Meta Title', type: 'text', placeholder: 'Contact Us - XmartyCreator' },
-        { key: 'description', label: 'Meta Description', type: 'textarea', placeholder: 'Get in touch with the XmartyCreator support and admissions team.' },
+        { key: 'title', label: 'Meta Title', type: 'text', placeholder: 'Contact Us - Xmarty Creator' },
+        { key: 'description', label: 'Meta Description', type: 'textarea', placeholder: 'Get in touch with the Xmarty Creator support and admissions team.' },
         { key: 'keywords', label: 'Meta Keywords', type: 'text', placeholder: 'contact, support, help, email, address' }
       ]
     }
@@ -395,7 +395,7 @@ export const PAGE_SCHEMAS: Record<string, SectionSchema[]> = {
       label: 'SEO Metadata',
       description: 'Configure SEO metadata for the Mega Quizzes page.',
       fields: [
-        { key: 'title', label: 'Meta Title', type: 'text', placeholder: 'Mega Quizzes - XmartyCreator' },
+        { key: 'title', label: 'Meta Title', type: 'text', placeholder: 'Mega Quizzes - Xmarty Creator' },
         { key: 'description', label: 'Meta Description', type: 'textarea', placeholder: 'Register for the upcoming premium live assessment tracks.' },
         { key: 'keywords', label: 'Meta Keywords', type: 'text', placeholder: 'mega quiz, live assessment, coding test' }
       ]
@@ -465,8 +465,8 @@ export const PAGE_SCHEMAS: Record<string, SectionSchema[]> = {
       label: 'SEO Metadata',
       description: 'Configure SEO metadata for the Community page.',
       fields: [
-        { key: 'title', label: 'Meta Title', type: 'text', placeholder: 'Community - XmartyCreator' },
-        { key: 'description', label: 'Meta Description', type: 'textarea', placeholder: 'Join the XmartyCreator community. Connect, learn, build and grow together.' },
+        { key: 'title', label: 'Meta Title', type: 'text', placeholder: 'Community - Xmarty Creator' },
+        { key: 'description', label: 'Meta Description', type: 'textarea', placeholder: 'Join the Xmarty Creator community. Connect, learn, build and grow together.' },
         { key: 'keywords', label: 'Meta Keywords', type: 'text', placeholder: 'community, learning, coding, support' }
       ]
     }
