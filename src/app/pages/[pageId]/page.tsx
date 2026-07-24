@@ -803,6 +803,9 @@ export default function PageEditor() {
                               </Select>
                             </div>
                           </div>
+                      {section.key === 'hero' && heroViewType === 'mobile' && (
+                        <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs font-semibold col-span-full">
+                          Note: The main heading, description, buttons, and stats are shared automatically between Desktop and Mobile. You are configuring the mobile-specific image asset below.
                         </div>
                       )}
                       <div className="grid gap-4 md:gap-6 lg:grid-cols-2 w-full min-w-0">
@@ -810,9 +813,14 @@ export default function PageEditor() {
                           const val = content[section.key]?.[field.key] || '';
                           
                           if (section.key === 'hero') {
-                            const isMobileField = field.key === 'carouselSlides';
-                            if (heroViewType === 'desktop' && isMobileField) return null;
-                            if (heroViewType === 'mobile' && !isMobileField) return null;
+                            const isMobileOnly = field.key === 'heroMobileAsset';
+                            const isCarouselField = field.key === 'carouselSlides';
+                            
+                            // Hide carousel fields completely since they are no longer in front-end
+                            if (isCarouselField) return null;
+                            
+                            if (heroViewType === 'desktop' && isMobileOnly) return null;
+                            if (heroViewType === 'mobile' && !isMobileOnly) return null;
                           }
 
                           if (field.type === 'list' && field.itemFields) {

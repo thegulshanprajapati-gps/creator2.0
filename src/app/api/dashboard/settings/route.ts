@@ -54,6 +54,8 @@ export async function POST(req: Request) {
       youtube_url: payload.youtube_url || '',
       whatsapp_url: payload.whatsapp_url || '',
       certificate_template: payload.certificate_template || '',
+      login_enabled: payload.login_enabled ?? true,
+      mobile_cta_image: payload.mobile_cta_image || '',
       cert_font_family: payload.cert_font_family || 'helvetica',
       cert_font_bold: payload.cert_font_bold ?? true,
       cert_font_italic: payload.cert_font_italic ?? false,

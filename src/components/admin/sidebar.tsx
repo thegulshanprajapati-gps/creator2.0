@@ -71,6 +71,7 @@ const MENU_ITEMS = [
     { label: "Student Reports", icon: BarChart, href: "/assessments/student-reports" },
     { label: "Allotted Certificates", icon: ShieldCheck, href: "/assessments/certificates" },
     { label: "Hub Interactions", icon: MessageSquare, href: "/community" },
+    { label: "Live Community Chat", icon: MessageSquare, href: "/community-chat" },
   ]},
 
   { group: "Core Engine", items: [

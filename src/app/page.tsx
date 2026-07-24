@@ -66,6 +66,54 @@ export default function SupportDashboard() {
   const [blogExcerpt, setBlogExcerpt] = useState('');
   const [isPostingBlog, setIsPostingBlog] = useState(false);
 
+  // System access states
+  const [siteSettings, setSiteSettings] = useState<any>(null);
+  const [loginEnabled, setLoginEnabled] = useState(true);
+  const [mobileCtaImage, setMobileCtaImage] = useState('');
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
+
+  const fetchSettings = async () => {
+    try {
+      const res = await fetch('/api/dashboard/settings');
+      const data = await res.json();
+      if (data.success && data.settings) {
+        setSiteSettings(data.settings);
+        setLoginEnabled(data.settings.login_enabled !== false);
+        setMobileCtaImage(data.settings.mobile_cta_image || '');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSaveSystemSettings = async (nextLogin: boolean, nextImage: string) => {
+    setIsSavingSettings(true);
+    try {
+      const res = await fetch('/api/dashboard/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...siteSettings,
+          login_enabled: nextLogin,
+          mobile_cta_image: nextImage
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSiteSettings(data.settings);
+        setLoginEnabled(data.settings.login_enabled !== false);
+        setMobileCtaImage(data.settings.mobile_cta_image || '');
+        alert('System settings updated successfully!');
+      } else {
+        alert('Failed to save settings: ' + data.error);
+      }
+    } catch (err) {
+      alert('Error saving settings: ' + err);
+    } finally {
+      setIsSavingSettings(false);
+    }
+  };
+
   const handleInitializeUpdate = async () => {
     setIsUpdatingSitemap(true);
     try {
@@ -158,6 +206,7 @@ export default function SupportDashboard() {
 
     fetchStats();
     fetchSecurityLogs(signal);
+    fetchSettings();
     const interval = setInterval(() => {
       fetchStats();
       fetchSecurityLogs(signal);
@@ -319,6 +368,54 @@ export default function SupportDashboard() {
                           <Plus className="h-4 w-4" /> Post Instant Blog
                         </Link>
                       </Button>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* ── System Access & Media Gateway Controls ──────────────────────── */}
+                <Card className="shadow-2xl border-primary/5 rounded-2xl md:rounded-[2rem] overflow-hidden bg-background/80 backdrop-blur-sm p-6 md:p-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <div>
+                      <h2 className="font-headline font-bold text-xl text-foreground flex items-center gap-2">
+                        <Lock className="h-5 w-5 text-primary" /> System Access & Mobile Media Controls
+                      </h2>
+                      <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold mt-1">Configure student login gateway status and responsive assets</p>
+                    </div>
+                    
+                    <div className="flex flex-col gap-4">
+                      {/* Toggle Login */}
+                      <div className="flex items-center justify-between p-3 rounded-xl border border-border bg-muted/20">
+                        <span className="text-sm font-semibold text-foreground">Student Portal Access (Login)</span>
+                        <Button 
+                          onClick={() => handleSaveSystemSettings(!loginEnabled, mobileCtaImage)}
+                          disabled={isSavingSettings}
+                          variant={loginEnabled ? "default" : "destructive"} 
+                          className="rounded-lg font-bold"
+                        >
+                          {loginEnabled ? "Gateway: ACTIVE (ON)" : "Gateway: DISABLED (OFF)"}
+                        </Button>
+                      </div>
+
+                      {/* Mobile Image URL Input */}
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground ml-1">Mobile Hero Mockup Image URL</label>
+                        <div className="flex gap-2">
+                          <input 
+                            type="text"
+                            placeholder="https://.../mobile-hero.png"
+                            value={mobileCtaImage}
+                            onChange={(e) => setMobileCtaImage(e.target.value)}
+                            className="flex-1 text-sm bg-muted/40 border border-border outline-none focus:border-primary rounded-xl px-4 py-2 text-foreground"
+                          />
+                          <Button 
+                            onClick={() => handleSaveSystemSettings(loginEnabled, mobileCtaImage)}
+                            disabled={isSavingSettings}
+                            className="rounded-xl font-bold bg-primary text-white"
+                          >
+                            Save URL
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </Card>

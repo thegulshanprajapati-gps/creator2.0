@@ -35,6 +35,7 @@ export const PAGE_SCHEMAS: Record<string, SectionSchema[]> = {
         { key: 'subtitle', label: 'Hero Subtitle', type: 'richtext', placeholder: 'XmartyCreator helps creators learn...' },
         { key: 'subtitleDarkColor', label: 'Subtitle Color (Dark Mode)', type: 'text', placeholder: 'e.g. #cbd5e1' },
         { key: 'image', label: 'Hero Asset', type: 'image' },
+        { key: 'heroMobileAsset', label: 'Hero Mobile Image Asset', type: 'image', description: 'Upload a specific hero image optimized for mobile devices (phone view).' },
         { key: 'primaryCta', label: 'Primary Button Text', type: 'text', placeholder: 'Explore Courses' },
         { key: 'primaryCtaLink', label: 'Primary Button Link', type: 'text', placeholder: '/courses' },
         { key: 'secondaryCta', label: 'Secondary Button Text', type: 'text', placeholder: 'Join Community' },
