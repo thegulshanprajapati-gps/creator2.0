@@ -19,12 +19,20 @@ import {
   FolderSymlink, 
   X,
   FileText,
-  Image as ImageIcon
+  Image as ImageIcon,
+  BookOpen,
+  Video,
+  Settings,
+  MoreVertical,
+  Layers,
+  LayoutDashboard,
+  Monitor,
+  Link as LinkIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
@@ -139,6 +147,11 @@ export function WindowsExplorer({
   const [historyIndex, setHistoryIndex] = useState(0);
   const isCatalog = title.toLowerCase().includes("catalog") || title.toLowerCase().includes("curriculum") || title.toLowerCase().includes("course");
 
+  const [alertDialog, setAlertDialog] = useState<{ open: boolean; title: string; message: string }>({ open: false, title: '', message: '' });
+  const showAlert = (message: string, title: string = 'Notification') => {
+    setAlertDialog({ open: true, title, message });
+  };
+
   // Search
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -200,11 +213,14 @@ export function WindowsExplorer({
       const { error: updateErr } = await db.from('profiles').update({ enrolled_courses: enrolled }).eq('id', enrollTarget.studentId);
       if (updateErr) throw updateErr;
 
-      alert(`Successfully enrolled student in "${selectedCourseName}"!`);
+      showAlert(`Successfully enrolled student in "${selectedCourseName}"!`, 'Enrollment Successful');
       setEnrollDialogOpen(false);
-      window.location.reload();
+      // Let dialog close smoothly before reloading
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
     } catch (e: any) {
-      alert(`Enrollment failed: ${e.message || String(e)}`);
+      showAlert(`Enrollment failed: ${e.message || String(e)}`, 'Enrollment Failed');
     } finally {
       setEnrolling(false);
     }
@@ -606,7 +622,7 @@ export function WindowsExplorer({
       setPropertiesDialogOpen(false);
       setPropertiesTarget(null);
     } catch (e: any) {
-      alert(`Failed to save properties: ${e.message || String(e)}`);
+      showAlert(`Failed to save properties: ${e.message || String(e)}`, 'Error');
     } finally {
       setSavingProperties(false);
     }
@@ -759,6 +775,7 @@ export function WindowsExplorer({
           <div className={cn("text-xs font-semibold uppercase tracking-wider", isDarkTheme ? "text-neutral-400" : "text-neutral-500")}>
             {title}
           </div>
+
           {/* Light/Dark Toggle Switch */}
           <Button
             size="icon"
@@ -783,314 +800,248 @@ export function WindowsExplorer({
         </div>
       </div>
 
-      {/* 2. Address & Navigation Bar */}
-      <div className={cn(
-        "flex flex-col md:flex-row items-stretch md:items-center gap-2 px-3 py-1.5 border-b select-none",
-        isDarkTheme ? "bg-[#252526] border-neutral-800" : "bg-[#f5f5f5] border-neutral-200"
-      )}>
-        <div className="flex items-center gap-2 flex-1 min-w-0">
-          {/* Navigation Buttons */}
-          <div className="flex items-center gap-1 shrink-0">
-            {/* Mobile Sidebar Toggle Button */}
-            <Button
-              size="icon"
-              variant="ghost"
-              className={cn(
-                "h-7 w-7 md:hidden",
-                isDarkTheme ? "text-neutral-400 hover:bg-neutral-800 hover:text-white" : "text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900",
-                sidebarOpen && (isDarkTheme ? "bg-neutral-800 text-white" : "bg-neutral-200 text-neutral-900")
-              )}
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              title="Toggle Sidebar"
-            >
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </Button>
+        <div className={cn("flex-1 overflow-y-auto p-4 sm:p-8 space-y-8 relative font-sans", isDarkTheme ? "bg-[#0a0a0a] text-white" : "bg-[#f8f9fa] text-slate-900")}>
+          {currentFolderId === null ? (
+            <div className="space-y-8 max-w-7xl mx-auto">
+              {/* LMS Dashboard Header */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-white/10">
+                <div className="space-y-1">
+                  <h1 className="text-3xl font-extrabold tracking-tight">Course Catalog</h1>
+                  <p className={cn("text-sm", isDarkTheme ? "text-neutral-400" : "text-neutral-500")}>Manage and create your educational content</p>
+                </div>
+                <div className="flex items-center gap-4 w-full md:w-auto">
+                  <div className="relative w-full md:w-72">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+                    <Input 
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search courses..." 
+                      className={cn("w-full pl-9 h-11 rounded-xl transition-all border", isDarkTheme ? "bg-neutral-900/50 border-neutral-800 focus:border-indigo-500" : "bg-white border-neutral-200 focus:border-indigo-500")}
+                    />
+                  </div>
+                  {onCreateFolder && (
+                    <Button 
+                      onClick={() => setCreateDialogOpen(true)}
+                      className="h-11 px-6 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white shadow-lg shadow-indigo-500/25 transition-all font-semibold shrink-0"
+                    >
+                      <Plus className="w-4 h-4 mr-2" /> Create Course
+                    </Button>
+                  )}
+                </div>
+              </div>
 
-            <Button
-              size="icon"
-              variant="ghost"
-              className={cn(
-                "h-7 w-7 disabled:opacity-30",
-                isDarkTheme ? "text-neutral-400 hover:bg-neutral-800 hover:text-white" : "text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900"
+              {/* Grid Cards */}
+              {currentItems.length === 0 ? (
+                <div className={cn("flex flex-col items-center justify-center py-20 rounded-3xl border border-dashed", isDarkTheme ? "border-neutral-800 bg-neutral-900/20" : "border-neutral-300 bg-white/50")}>
+                  <BookOpen className="w-16 h-16 text-neutral-400 mb-4 opacity-50" />
+                  <h3 className="text-xl font-semibold mb-2">No courses found</h3>
+                  <p className={cn("text-sm max-w-sm text-center mb-6", isDarkTheme ? "text-neutral-500" : "text-neutral-500")}>Get started by creating your first course. Add modules, lessons, and resources to build your curriculum.</p>
+                  {onCreateFolder && (
+                    <Button onClick={() => setCreateDialogOpen(true)} variant="outline" className="rounded-xl h-10 border-indigo-500/30 text-indigo-500 hover:bg-indigo-500/10">
+                      Create your first course
+                    </Button>
+                  )}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {currentItems.map(item => (
+                    <div 
+                      key={item.id}
+                      onClick={() => handleDoubleClick(item)}
+                      className={cn(
+                        "group relative rounded-2xl border overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 flex flex-col",
+                        isDarkTheme ? "bg-[#141414] border-neutral-800" : "bg-white border-neutral-200"
+                      )}
+                    >
+                      {/* Thumbnail Area */}
+                      <div className="relative h-40 w-full overflow-hidden">
+                        {item.thumbnailUrl ? (
+                          <img src={item.thumbnailUrl} alt={item.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        ) : (
+                          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-600/20 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+                            {item.type === 'folder' ? <BookOpen className="w-12 h-12 text-indigo-500/50" /> : <FileText className="w-12 h-12 text-indigo-500/50" />}
+                          </div>
+                        )}
+                        {/* Overlay Actions */}
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3 backdrop-blur-[2px]">
+                          <Button 
+                            size="sm" 
+                            variant="secondary" 
+                            className="rounded-full bg-white/10 hover:bg-white/20 text-white border-white/20 h-9"
+                            onClick={(e) => { e.stopPropagation(); handleDoubleClick(item); }}
+                          >
+                            Manage Content
+                          </Button>
+                          {onSaveProperties && (
+                            <Button 
+                              size="icon" 
+                              variant="secondary" 
+                              className="rounded-full bg-white/10 hover:bg-white/20 text-white border-white/20 h-9 w-9"
+                              onClick={(e) => { 
+                                e.stopPropagation(); 
+                                setPropertiesTarget(item);
+                                setCourseCategory(item.category || "Programming");
+                                setCourseLevel(item.level || "Beginner");
+                                setCourseInstructor(item.instructor || "");
+                                setCourseDuration(item.duration || "");
+                                setCourseStudents(item.students || "");
+                                setCoursePrice(item.price || "");
+                                setCourseDesc(item.description || "");
+                                setCourseThumbnail(item.thumbnailUrl || "");
+                                setCourseVisibility(item.visibility || "Private");
+                                setCourseSlug(item.slug || "");
+                                setPropertiesDialogOpen(true);
+                              }}
+                            >
+                              <Settings className="w-4 h-4" />
+                            </Button>
+                          )}
+                          {onDeleteItems && (
+                            <Button 
+                              size="icon" 
+                              variant="destructive" 
+                              className="rounded-full h-9 w-9 opacity-80 hover:opacity-100"
+                              onClick={(e) => { 
+                                e.stopPropagation();
+                                onDeleteItems(item.type === 'folder' ? [item.id] : [], item.type === 'file' ? [item.id] : []);
+                              }}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </div>
+                        {/* Badges */}
+                        <div className="absolute top-3 left-3 flex gap-2">
+                          <span className="bg-black/50 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
+                            {item.category || 'General'}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      {/* Content Area */}
+                      <div className="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex justify-between items-start mb-2">
+                            <h3 className="font-bold text-base line-clamp-1 group-hover:text-indigo-400 transition-colors">{item.name}</h3>
+                          </div>
+                          <p className={cn("text-xs line-clamp-2 mb-4 min-h-[32px]", isDarkTheme ? "text-neutral-400" : "text-neutral-500")}>
+                            {item.description || "No description provided for this course."}
+                          </p>
+                        </div>
+                        
+                        <div className="flex items-center justify-between mt-auto pt-4 border-t border-neutral-700/20">
+                          <div className={cn("text-xs font-semibold px-2.5 py-1 rounded-md", item.isPaid ? "bg-amber-500/10 text-amber-600 dark:text-amber-400" : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400")}>
+                            {item.isPaid ? (item.price ? `₹${item.price}` : 'Paid') : 'Free'}
+                          </div>
+                          <span className={cn("text-[11px] font-medium flex items-center gap-1", isDarkTheme ? "text-neutral-500" : "text-neutral-400")}>
+                            <Layers className="w-3 h-3" /> {item.level || 'Beginner'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
-              disabled={historyIndex <= 0}
-              onClick={navigateBack}
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              size="icon"
-              variant="ghost"
-              className={cn(
-                "h-7 w-7 disabled:opacity-30",
-                isDarkTheme ? "text-neutral-400 hover:bg-neutral-800 hover:text-white" : "text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900"
-              )}
-              disabled={historyIndex >= history.length - 1}
-              onClick={navigateForward}
-            >
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Button
-              size="icon"
-              variant="ghost"
-              className={cn(
-                "h-7 w-7 disabled:opacity-30",
-                isDarkTheme ? "text-neutral-400 hover:bg-neutral-800 hover:text-white" : "text-neutral-600 hover:bg-neutral-200 hover:text-neutral-900"
-              )}
-              disabled={currentFolderId === null}
-              onClick={navigateUp}
-            >
-              <ChevronUp className="h-4 w-4" />
-            </Button>
-          </div>
-
-          {/* Path Address Bar */}
-          <div className={cn(
-            "flex-1 flex items-center border rounded px-2 py-0.5 text-xs min-w-0 overflow-hidden h-7",
-            isDarkTheme ? "bg-[#1e1e1e] border-neutral-700 text-neutral-300" : "bg-white border-neutral-300 text-neutral-700"
-          )}>
-            <Computer className="h-3.5 w-3.5 mr-1 text-neutral-400 shrink-0" />
-            <div className="flex items-center gap-1 overflow-x-auto whitespace-nowrap scrollbar-none">
-              {pathSegments.map((seg, idx) => (
-                <React.Fragment key={idx}>
-                  {idx > 0 && <ChevronRight className="h-3 w-3 text-neutral-500 shrink-0" />}
-                  <span
-                    onClick={() => {
-                      navigateTo(seg.id);
-                      setSidebarOpen(false);
-                    }}
-                    className="hover:underline hover:text-blue-500 cursor-pointer select-none"
-                  >
-                    {seg.name}
-                  </span>
-                </React.Fragment>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Search Bar */}
-        <div className="relative w-full md:w-64 shrink-0">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-neutral-500" />
-          <Input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={`Search ${rootName}`}
-            className={cn(
-              "text-xs h-7 pl-8 focus:border-[#0078d7] focus:ring-0 focus-visible:ring-0 placeholder-neutral-500 rounded",
-              isDarkTheme ? "bg-[#1e1e1e] border-neutral-700 text-neutral-200" : "bg-white border-neutral-300 text-neutral-800"
-            )}
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery("")}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* 3. Main Split Window (Sidebar + Grid view) */}
-      <div className="flex-1 flex min-h-0 relative">
-        {/* Left Tree Sidebar Panel */}
-        <div className={cn(
-          "w-56 border-r p-2 overflow-y-auto space-y-4 select-none shrink-0 scrollbar-thin transition-all duration-300 md:relative absolute left-0 top-0 bottom-0 md:translate-x-0 z-30 h-full",
-          sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
-          isDarkTheme ? "bg-[#252526] border-neutral-800" : "bg-[#f5f5f5] border-neutral-200"
-        )}>
-          {/* Quick Access */}
-          <div className="space-y-1">
-            <div className="flex justify-between items-center px-2">
-              <div className={cn("text-[10px] font-bold uppercase tracking-wider", isDarkTheme ? "text-neutral-500" : "text-neutral-400")}>Quick Access</div>
-              <button 
-                onClick={() => setSidebarOpen(false)} 
-                className={cn("p-1 rounded md:hidden", isDarkTheme ? "hover:bg-neutral-800 text-neutral-400" : "hover:bg-neutral-200 text-neutral-600")}
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            </div>
-            <div
-              onClick={() => {
-                navigateTo(null);
-                setSidebarOpen(false);
-              }}
-              className={cn(
-                "flex items-center gap-2 py-1 px-2 rounded cursor-pointer text-xs transition-colors",
-                isDarkTheme ? "hover:bg-neutral-800 text-neutral-300" : "hover:bg-neutral-200 text-neutral-700",
-                currentFolderId === null && (
-                  isDarkTheme
-                    ? "bg-[#0078d7]/20 text-white font-medium border border-[#0078d7]"
-                    : "bg-[#0078d7]/15 text-neutral-900 font-medium border border-[#0078d7]"
-                )
-              )}
-            >
-              <HardDrive className="h-4.5 w-4.5 text-sky-400 shrink-0" />
-              <span>{rootName} Root</span>
-            </div>
-            
-            {/* Recycle Bin Link */}
-            <a
-              href="/recycle-bin"
-              className={cn(
-                "flex items-center gap-2 py-1 px-2 rounded cursor-pointer text-xs transition-colors text-rose-400 hover:bg-neutral-800/50"
-              )}
-            >
-              <Trash2 className="h-4.5 w-4.5 text-rose-400 shrink-0" />
-              <span>Recycle Bin</span>
-            </a>
-          </div>
-
-          {/* Directory Tree */}
-          <div className="space-y-1">
-            <div className={cn("text-[10px] font-bold px-2 uppercase tracking-wider", isDarkTheme ? "text-neutral-500" : "text-neutral-400")}>Directories</div>
-            <div className="pl-1">
-              {folderTree.map(folder => renderSidebarFolder(folder))}
-              {folderTree.length === 0 && (
-                <div className="text-[10px] text-neutral-500 italic pl-2">No folders found</div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Right Main Grid Workspace */}
-        <div
-          ref={workspaceRef}
-          onClick={handleGridBackgroundClick}
-          className={cn(
-            "flex-1 p-4 overflow-y-auto scrollbar-thin select-none relative",
-            isDarkTheme ? "bg-[#1e1e1e]" : "bg-white"
-          )}
-        >
-          {/* Selection Drag Box Overlay */}
-          {dragBox && dragBox.w >= 5 && dragBox.h >= 5 && (
-            <div
-              style={{
-                left: dragBox.x,
-                top: dragBox.y,
-                width: dragBox.w,
-                height: dragBox.h,
-              }}
-              className="absolute pointer-events-none border border-[#0078d7] bg-[#0078d7]/15 rounded-sm z-50 animate-in fade-in-20 duration-75"
-            />
-          )}
-
-          {currentItems.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-neutral-500 space-y-2">
-              <FolderSymlink className="h-12 w-12 text-neutral-600" />
-              <p className="text-sm">This folder is empty.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
-              {currentItems.map((item) => {
-                const isSelected = selectedIds.includes(item.id);
-                const fileExt = item.name.split(".").pop() || "";
-                return (
-                  <div
-                    key={item.id}
-                    data-id={item.id}
-                    data-type={item.type}
-                    data-name={item.name}
-                    data-url={item.url || ''}
-                    onClick={(e) => handleItemClick(e, item.id)}
-                    onDoubleClick={() => handleDoubleClick(item)}
-                    onContextMenu={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setContextMenu({ x: e.clientX, y: e.clientY, item });
-                    }}
-                    className={cn(
-                      "explorer-item-card relative flex flex-col items-center p-2 rounded text-center border border-transparent cursor-pointer transition-all duration-200 select-none group",
-                      isDarkTheme 
-                        ? "hover:bg-neutral-800/50 hover:border-neutral-700 text-neutral-300"
-                        : "hover:bg-neutral-100 hover:border-neutral-300 text-neutral-800",
-                      isSelected && (
-                        isDarkTheme
-                          ? "bg-[#0078d7]/15 border-[#0078d7] ring-1 ring-[#0078d7]/30 text-white font-semibold"
-                          : "bg-[#0078d7]/15 border-[#0078d7] ring-1 ring-[#0078d7]/20 text-neutral-900 font-semibold"
-                      )
-                    )}
-                  >
-                    {/* Checkbox Selector - visible on hover or if selected */}
-                    <div className={cn(
-                      "absolute top-1.5 left-1.5 z-10 opacity-0 group-hover:opacity-100 transition-opacity",
-                      isSelected ? "opacity-100" : ""
-                    )}>
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onClick={(e) => e.stopPropagation()}
-                        onChange={(e) => {
-                          e.stopPropagation();
-                          setSelectedIds(prev =>
-                            prev.includes(item.id) ? prev.filter(x => x !== item.id) : [...prev, item.id]
-                          );
-                        }}
-                        className="h-3.5 w-3.5 rounded border-neutral-400 text-[#0078d7] focus:ring-[#0078d7]/30 cursor-pointer bg-white dark:bg-neutral-800"
-                      />
-                    </div>
-
-                    {/* Icon Container */}
-                    <div className="relative mb-2 animate-in fade-in zoom-in-95 duration-150 mt-2">
-                      {item.type === "folder" ? (
-                        <WindowsFolderIcon className="h-12 w-12 drop-shadow-sm" />
-                      ) : item.thumbnailUrl ? (
-                        <div className={cn(
-                          "h-12 w-12 rounded border overflow-hidden flex items-center justify-center",
-                          isDarkTheme ? "border-neutral-700 bg-neutral-800" : "border-neutral-300 bg-neutral-100"
-                        )}>
-                          <img
-                            src={item.thumbnailUrl}
-                            alt={item.name}
-                            className="h-full w-full object-cover"
-                          />
-                        </div>
-                      ) : (
-                        <WindowsFileIcon className="h-12 w-12 drop-shadow-sm" extension={fileExt} />
-                      )}
-                    </div>
-
-                    {/* Name */}
-                    <span className="text-[11px] font-medium leading-tight line-clamp-2 max-w-full break-all px-1 select-none">
-                      {item.name}
+            <div className="space-y-6 max-w-5xl mx-auto">
+              {/* Breadcrumb Navigation */}
+              <div className="flex items-center gap-2 text-sm">
+                {pathSegments.map((seg, idx) => (
+                  <React.Fragment key={idx}>
+                    <span 
+                      onClick={() => navigateTo(seg.id)}
+                      className={cn("cursor-pointer font-medium hover:text-indigo-500 transition-colors", idx === pathSegments.length - 1 ? (isDarkTheme ? "text-white" : "text-slate-900") : (isDarkTheme ? "text-neutral-500" : "text-neutral-500"))}
+                    >
+                      {seg.name}
                     </span>
+                    {idx < pathSegments.length - 1 && <ChevronRight className="w-4 h-4 text-neutral-500" />}
+                  </React.Fragment>
+                ))}
+              </div>
 
-                    {/* Folder Badges (like Access Free/Paid) */}
-                    <div className="flex gap-1 flex-wrap justify-center mt-1">
-                      {item.isPaid !== undefined && (
-                        <span className={cn(
-                          "text-[8px] font-bold px-1.5 py-0.2 rounded-full border shrink-0",
-                          item.isPaid 
-                            ? "bg-amber-950/40 text-amber-400 border-amber-800/30"
-                            : "bg-emerald-950/40 text-emerald-400 border-emerald-800/30"
-                        )}>
-                          {item.isPaid ? "Paid" : "Free"}
-                        </span>
-                      )}
-                      {item.type === 'folder' && !item.parentId && item.approved === false && (
-                        <span className="text-[8px] font-bold px-1.5 py-0.2 rounded-full border shrink-0 bg-rose-950/40 text-rose-400 border-rose-800/30">
-                          Pending
-                        </span>
-                      )}
-                    </div>
+              {/* Course Module Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl border shadow-sm bg-gradient-to-r from-indigo-500/5 to-purple-500/5 border-indigo-500/10">
+                <div>
+                  <h1 className="text-2xl font-bold mb-1">{items.find(i => i.id === currentFolderId)?.name || 'Module'}</h1>
+                  <p className={cn("text-sm", isDarkTheme ? "text-neutral-400" : "text-neutral-500")}>Build your curriculum by adding chapters and lessons</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  {onCreateFolder && (
+                    <Button onClick={() => setCreateDialogOpen(true)} variant="outline" className="rounded-xl h-10 border-indigo-500/30 text-indigo-500 hover:bg-indigo-500/10">
+                      <Folder className="w-4 h-4 mr-2" /> Add Chapter
+                    </Button>
+                  )}
+                  {onUploadFile && (
+                    <Button onClick={() => setUploadDialogOpen(true)} className="rounded-xl h-10 bg-indigo-600 hover:bg-indigo-700 text-white shadow-md">
+                      <FileText className="w-4 h-4 mr-2" /> Add Lesson
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              {/* Curriculum List */}
+              <div className="space-y-4">
+                {currentItems.length === 0 ? (
+                  <div className={cn("text-center py-12 rounded-2xl border border-dashed", isDarkTheme ? "border-neutral-800" : "border-neutral-300")}>
+                    <Layers className="w-12 h-12 mx-auto text-neutral-400 mb-3 opacity-50" />
+                    <h3 className="text-lg font-medium text-neutral-500">This module is empty</h3>
                   </div>
-                );
-              })}
+                ) : (
+                  <>
+                    {/* Folders (Chapters) */}
+                    {currentItems.filter(i => i.type === 'folder').map(folder => (
+                      <div key={folder.id} className={cn("rounded-xl border overflow-hidden transition-all", isDarkTheme ? "bg-[#181818] border-neutral-800 hover:border-neutral-700" : "bg-white border-neutral-200 hover:border-neutral-300 shadow-sm")}>
+                        <div 
+                          className="flex items-center justify-between p-4 cursor-pointer select-none"
+                          onClick={() => handleDoubleClick(folder)}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-500">
+                              <Folder className="w-5 h-5 fill-indigo-500/20" />
+                            </div>
+                            <div>
+                              <h4 className="font-semibold">{folder.name}</h4>
+                              <p className="text-xs text-neutral-500">{folder.description || 'Chapter Module'}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button size="icon" variant="ghost" className="h-8 w-8 text-neutral-400 hover:text-white" onClick={(e) => { e.stopPropagation(); setRenameTarget(folder); setRenameValue(folder.name); setRenameDialogOpen(true); }}><Edit2 className="w-3.5 h-3.5" /></Button>
+                            {onDeleteItems && <Button size="icon" variant="ghost" className="h-8 w-8 text-neutral-400 hover:text-rose-500" onClick={(e) => { e.stopPropagation(); onDeleteItems([folder.id], []); }}><Trash2 className="w-3.5 h-3.5" /></Button>}
+                            <ChevronRight className="w-5 h-5 text-neutral-500" />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    
+                    {/* Files (Lessons) */}
+                    {currentItems.filter(i => i.type === 'file').map(file => {
+                      const ext = file.name.split('.').pop()?.toLowerCase() || '';
+                      const isVideo = ['mp4', 'webm', 'mov'].includes(ext);
+                      const isPdf = ['pdf'].includes(ext);
+                      const isLink = ['url'].includes(ext);
+                      return (
+                        <div key={file.id} className={cn("flex items-center justify-between p-3.5 rounded-xl border ml-4 transition-colors", isDarkTheme ? "bg-[#1e1e1e] border-neutral-800/60 hover:bg-[#252525]" : "bg-neutral-50 border-neutral-200 hover:bg-neutral-100")}>
+                          <div className="flex items-center gap-3">
+                            <div className={cn("w-8 h-8 rounded-md flex items-center justify-center", isVideo ? "bg-purple-500/10 text-purple-500" : isPdf ? "bg-rose-500/10 text-rose-500" : isLink ? "bg-sky-500/10 text-sky-500" : "bg-emerald-500/10 text-emerald-500")}>
+                              {isVideo ? <Video className="w-4 h-4" /> : isPdf ? <FileText className="w-4 h-4" /> : isLink ? <LinkIcon className="w-4 h-4" /> : <File className="w-4 h-4" />}
+                            </div>
+                            <span className="font-medium text-sm">{file.name}</span>
+                          </div>
+                          <div className="flex items-center gap-1 opacity-50 hover:opacity-100 transition-opacity">
+                            <Button size="icon" variant="ghost" className="h-7 w-7 text-neutral-400" onClick={() => { setRenameTarget(file); setRenameValue(file.name); setRenameDialogOpen(true); }}><Edit2 className="w-3.5 h-3.5" /></Button>
+                            {onDeleteItems && <Button size="icon" variant="ghost" className="h-7 w-7 text-neutral-400 hover:text-rose-500" onClick={() => onDeleteItems([], [file.id])}><Trash2 className="w-3.5 h-3.5" /></Button>}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </>
+                )}
+              </div>
             </div>
           )}
         </div>
-      </div>
-
-      {/* 4. Footer Status Bar */}
-      <div className="flex items-center justify-between px-3 py-1 bg-[#0078d7] text-white text-[11px] select-none shrink-0 font-medium">
-        <div>{items.length} items</div>
-        {selectedIds.length > 0 && (
-          <div>{selectedIds.length} item{selectedIds.length > 1 ? "s" : ""} selected</div>
-        )}
-      </div>
+      
 
       {/* ================= MODALS ================= */}
 
@@ -1437,7 +1388,8 @@ export function WindowsExplorer({
           options={[
             ...(contextMenu.item.type === 'folder' && contextMenu.item.studentId ? [
               {
-                label: '🎓 Enroll into Course',
+                label: 'Enroll into Course',
+                icon: <i className="fa-solid fa-graduation-cap text-emerald-500" />,
                 onClick: () => {
                   openEnrollDialog(contextMenu.item);
                   setContextMenu(null);
@@ -1445,7 +1397,8 @@ export function WindowsExplorer({
                 className: 'text-emerald-600 dark:text-emerald-400 font-bold',
               },
               {
-                label: '👤 View Student Profile',
+                label: 'View Student Profile',
+                icon: <i className="fa-solid fa-user text-sky-500" />,
                 onClick: () => {
                   openProfileDialog(contextMenu.item);
                   setContextMenu(null);
@@ -1454,21 +1407,23 @@ export function WindowsExplorer({
               }
             ] : []),
             ...(contextMenu.item.type === 'folder' && !contextMenu.item.parentId && isCatalog && contextMenu.item.approved === false && (userRole === 'admin' || userRole === 'super_admin' || userRole === 'superadmin' || userRole === 'support' || userRole === 'staff') ? [{
-              label: '✅ Approve Course',
+              label: 'Approve Course',
+              icon: <i className="fa-solid fa-circle-check text-emerald-500" />,
               onClick: async () => {
                 const res = await db.from('course_folders').update({ approved: true }).eq('id', contextMenu.item.id);
                 setContextMenu(null);
                 if (res.error) {
-                  alert(`Failed to approve course: ${res.error.message}`);
+                  showAlert(`Failed to approve course: ${res.error.message}`, 'Error');
                 } else {
-                  alert('Course has been approved and is now live!');
+                  showAlert('Course has been approved and is now live!', 'Success');
                   setTimeout(() => window.location.reload(), 1200);
                 }
               },
               className: 'text-emerald-600 dark:text-emerald-400 font-extrabold',
             }] : []),
             ...(contextMenu.item.type === 'folder' && !contextMenu.item.parentId && isCatalog && onAdvanceEdit ? [{
-              label: '🚀 Advance Edit',
+              label: 'Advance Edit',
+              icon: <i className="fa-solid fa-rocket text-violet-500" />,
               onClick: () => {
                 onAdvanceEdit(contextMenu.item);
                 setContextMenu(null);
@@ -1476,7 +1431,8 @@ export function WindowsExplorer({
               className: 'text-violet-600 dark:text-violet-400 font-extrabold',
             }] : []),
             ...(contextMenu.item.type === 'folder' && !contextMenu.item.parentId && isCatalog && onEditCourse ? [{
-              label: '✏️ Edit Course Page',
+              label: 'Edit Course Page',
+              icon: <i className="fa-solid fa-pen-to-square text-blue-500" />,
               onClick: () => {
                 onEditCourse(contextMenu.item);
                 setContextMenu(null);
@@ -1484,51 +1440,57 @@ export function WindowsExplorer({
               className: 'text-blue-600 dark:text-blue-400 font-bold',
             }] : []),
             {
-              label: contextMenu.item.type === 'folder' ? '📂 Open' : '📄 Open File',
+              label: contextMenu.item.type === 'folder' ? 'Open' : 'Open File',
+              icon: contextMenu.item.type === 'folder' ? <i className="fa-solid fa-folder-open text-amber-500" /> : <i className="fa-solid fa-file-lines text-blue-400" />,
               onClick: () => {
                 window.dispatchEvent(new CustomEvent('explorer-open-item', { detail: { id: contextMenu.item.id, type: contextMenu.item.type } }));
                 setContextMenu(null);
               },
             },
             ...(contextMenu.item.type === 'folder' && onCreateFolder ? [{
-              label: '📁 New Subfolder',
+              label: 'New Subfolder',
+              icon: <i className="fa-solid fa-folder-plus text-neutral-500 dark:text-neutral-400" />,
               onClick: () => {
-                // Navigate into folder first, then open create dialog
                 navigateTo(contextMenu.item.id);
                 setContextMenu(null);
                 setTimeout(() => setCreateDialogOpen(true), 100);
               },
             }] : []),
             ...(onRenameItem ? [{
-              label: '✏️ Rename',
+              label: 'Rename',
+              icon: <i className="fa-solid fa-pen text-neutral-500 dark:text-neutral-400" />,
               onClick: () => {
                 window.dispatchEvent(new CustomEvent('explorer-rename-item', { detail: { id: contextMenu.item.id } }));
                 setContextMenu(null);
               },
             }] : []),
             {
-              label: '📋 Copy Name',
+              label: 'Copy Name',
+              icon: <i className="fa-solid fa-copy text-neutral-500 dark:text-neutral-400" />,
               onClick: () => {
                 navigator.clipboard.writeText(contextMenu.item.name).catch(() => {});
                 setContextMenu(null);
               },
             },
             ...(contextMenu.item.url ? [{
-              label: '🔗 Copy Link',
+              label: 'Copy Link',
+              icon: <i className="fa-solid fa-link text-neutral-500 dark:text-neutral-400" />,
               onClick: () => {
                 navigator.clipboard.writeText(contextMenu.item.url!).catch(() => {});
                 setContextMenu(null);
               },
             }] : []),
             ...(onSaveProperties && contextMenu.item.type === 'folder' ? [{
-              label: '⚙️ Properties',
+              label: 'Properties',
+              icon: <i className="fa-solid fa-gear text-neutral-500 dark:text-neutral-400" />,
               onClick: () => {
                 window.dispatchEvent(new CustomEvent('explorer-open-properties', { detail: { id: contextMenu.item.id } }));
                 setContextMenu(null);
               },
             }] : []),
             ...(onDeleteItems ? [{
-              label: '🗑️ Delete',
+              label: 'Delete',
+              icon: <i className="fa-solid fa-trash-can text-rose-500" />,
               onClick: () => {
                 window.dispatchEvent(new CustomEvent('explorer-delete-item', { detail: { id: contextMenu.item.id, type: contextMenu.item.type } }));
                 setContextMenu(null);
@@ -1632,6 +1594,24 @@ export function WindowsExplorer({
           <DialogFooter>
             <Button className="bg-[#0078d7] hover:bg-[#0078d7]/90 text-white font-bold" onClick={() => setProfileDialogOpen(false)}>
               Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={alertDialog.open} onOpenChange={(open) => setAlertDialog(prev => ({ ...prev, open }))}>
+        <DialogContent className="max-w-md rounded-2xl p-6">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold flex items-center gap-2 text-foreground">
+              <i className="fa-solid fa-circle-info text-[#0078d7]" /> {alertDialog.title || 'Notification'}
+            </DialogTitle>
+            <DialogDescription className="text-sm pt-2 text-foreground">
+              {alertDialog.message}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="pt-4">
+            <Button className="bg-[#0078d7] hover:bg-[#0078d7]/90 text-white font-bold px-6" onClick={() => setAlertDialog(prev => ({ ...prev, open: false }))}>
+              OK
             </Button>
           </DialogFooter>
         </DialogContent>
