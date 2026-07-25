@@ -15,12 +15,12 @@ import { COOKIE_CSRF } from './rbac';
 // ─── Allowed origins per domain ───────────────────────────────────────────────
 const SUPPORT_ALLOWED_ORIGINS = [
   'http://localhost:4000',
-  'https://support.Xmarty Creator.com',
+  'https://support.xmartycreator.com',
 ];
 
 const INSTRUCTOR_ALLOWED_ORIGINS = [
   'http://localhost:5000',
-  'https://instructor.Xmarty Creator.com',
+  'https://instructor.xmartycreator.com',
 ];
 
 // ─── Generate CSRF token ──────────────────────────────────────────────────────
