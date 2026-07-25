@@ -183,3 +183,15 @@ header.flex.h-16 {
   backdrop-filter: blur(16px) !important;
   border-bottom: 1px solid hsl(var(--border) / 0.8) !important;
 }
+
+/* Badges, pills, and colorful background tags hover - make them lighter (lite color) */
+.badge:hover,
+[class*="badge"]:hover,
+[class*="bg-red-"]:hover,
+[class*="bg-green-"]:hover,
+[class*="bg-emerald-"]:hover,
+[class*="bg-blue-"]:hover,
+[class*="bg-teal-"]:hover {
+  filter: brightness(1.15) saturate(95%) !important;
+  transition: all 0.3s ease;
+}
