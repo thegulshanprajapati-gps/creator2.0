@@ -961,83 +961,108 @@ export function WindowsExplorer({
               </div>
 
               {/* Course Module Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl border shadow-sm bg-gradient-to-r from-indigo-500/5 to-purple-500/5 border-indigo-500/10">
-                <div>
-                  <h1 className="text-2xl font-bold mb-1">{items.find(i => i.id === currentFolderId)?.name || 'Module'}</h1>
-                  <p className={cn("text-sm", isDarkTheme ? "text-neutral-400" : "text-neutral-500")}>Build your curriculum by adding chapters and lessons</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  {onCreateFolder && (
-                    <Button onClick={() => setCreateDialogOpen(true)} variant="outline" className="rounded-xl h-10 border-indigo-500/30 text-indigo-500 hover:bg-indigo-500/10">
-                      <Folder className="w-4 h-4 mr-2" /> Add Chapter
-                    </Button>
-                  )}
-                  {onUploadFile && (
-                    <Button onClick={() => setUploadDialogOpen(true)} className="rounded-xl h-10 bg-indigo-600 hover:bg-indigo-700 text-white shadow-md">
-                      <FileText className="w-4 h-4 mr-2" /> Add Lesson
-                    </Button>
-                  )}
-                </div>
-              </div>
+              {(() => {
+                const currentFolderName = items.find(i => i.id === currentFolderId)?.name || '';
+                const isThumbnailFolder = currentFolderName.toLowerCase() === '.thumbnail' || currentFolderName.toLowerCase().includes('thumbnail');
 
-              {/* Curriculum List */}
-              <div className="space-y-4">
-                {currentItems.length === 0 ? (
-                  <div className={cn("text-center py-12 rounded-2xl border border-dashed", isDarkTheme ? "border-neutral-800" : "border-neutral-300")}>
-                    <Layers className="w-12 h-12 mx-auto text-neutral-400 mb-3 opacity-50" />
-                    <h3 className="text-lg font-medium text-neutral-500">This module is empty</h3>
-                  </div>
-                ) : (
+                return (
                   <>
-                    {/* Folders (Chapters) */}
-                    {currentItems.filter(i => i.type === 'folder').map(folder => (
-                      <div key={folder.id} className={cn("rounded-xl border overflow-hidden transition-all", isDarkTheme ? "bg-[#181818] border-neutral-800 hover:border-neutral-700" : "bg-white border-neutral-200 hover:border-neutral-300 shadow-sm")}>
-                        <div 
-                          className="flex items-center justify-between p-4 cursor-pointer select-none"
-                          onClick={() => handleDoubleClick(folder)}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-500">
-                              <Folder className="w-5 h-5 fill-indigo-500/20" />
-                            </div>
-                            <div>
-                              <h4 className="font-semibold">{folder.name}</h4>
-                              <p className="text-xs text-neutral-500">{folder.description || 'Chapter Module'}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Button size="icon" variant="ghost" className="h-8 w-8 text-neutral-400 hover:text-white" onClick={(e) => { e.stopPropagation(); setRenameTarget(folder); setRenameValue(folder.name); setRenameDialogOpen(true); }}><Edit2 className="w-3.5 h-3.5" /></Button>
-                            {onDeleteItems && <Button size="icon" variant="ghost" className="h-8 w-8 text-neutral-400 hover:text-rose-500" onClick={(e) => { e.stopPropagation(); onDeleteItems([folder.id], []); }}><Trash2 className="w-3.5 h-3.5" /></Button>}
-                            <ChevronRight className="w-5 h-5 text-neutral-500" />
-                          </div>
-                        </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl border shadow-sm bg-gradient-to-r from-indigo-500/5 to-purple-500/5 border-indigo-500/10">
+                      <div>
+                        <h1 className="text-2xl font-bold mb-1">{currentFolderName || 'Module'}</h1>
+                        <p className={cn("text-sm", isDarkTheme ? "text-neutral-400" : "text-neutral-500")}>
+                          {isThumbnailFolder 
+                            ? "Upload and manage the course thumbnail image here" 
+                            : "Build your curriculum by adding chapters and lessons"}
+                        </p>
                       </div>
-                    ))}
-                    
-                    {/* Files (Lessons) */}
-                    {currentItems.filter(i => i.type === 'file').map(file => {
-                      const ext = file.name.split('.').pop()?.toLowerCase() || '';
-                      const isVideo = ['mp4', 'webm', 'mov'].includes(ext);
-                      const isPdf = ['pdf'].includes(ext);
-                      const isLink = ['url'].includes(ext);
-                      return (
-                        <div key={file.id} className={cn("flex items-center justify-between p-3.5 rounded-xl border ml-4 transition-colors", isDarkTheme ? "bg-[#1e1e1e] border-neutral-800/60 hover:bg-[#252525]" : "bg-neutral-50 border-neutral-200 hover:bg-neutral-100")}>
-                          <div className="flex items-center gap-3">
-                            <div className={cn("w-8 h-8 rounded-md flex items-center justify-center", isVideo ? "bg-purple-500/10 text-purple-500" : isPdf ? "bg-rose-500/10 text-rose-500" : isLink ? "bg-sky-500/10 text-sky-500" : "bg-emerald-500/10 text-emerald-500")}>
-                              {isVideo ? <Video className="w-4 h-4" /> : isPdf ? <FileText className="w-4 h-4" /> : isLink ? <LinkIcon className="w-4 h-4" /> : <File className="w-4 h-4" />}
-                            </div>
-                            <span className="font-medium text-sm">{file.name}</span>
-                          </div>
-                          <div className="flex items-center gap-1 opacity-50 hover:opacity-100 transition-opacity">
-                            <Button size="icon" variant="ghost" className="h-7 w-7 text-neutral-400" onClick={() => { setRenameTarget(file); setRenameValue(file.name); setRenameDialogOpen(true); }}><Edit2 className="w-3.5 h-3.5" /></Button>
-                            {onDeleteItems && <Button size="icon" variant="ghost" className="h-7 w-7 text-neutral-400 hover:text-rose-500" onClick={() => onDeleteItems([], [file.id])}><Trash2 className="w-3.5 h-3.5" /></Button>}
-                          </div>
+                      <div className="flex items-center gap-3">
+                        {isThumbnailFolder ? (
+                          onUploadFile && (
+                            <Button onClick={() => setUploadDialogOpen(true)} className="rounded-xl h-10 bg-emerald-600 hover:bg-emerald-700 text-white shadow-md">
+                              <ImageIcon className="w-4 h-4 mr-2" /> Upload Thumbnail
+                            </Button>
+                          )
+                        ) : (
+                          <>
+                            {onCreateFolder && (
+                              <Button onClick={() => setCreateDialogOpen(true)} variant="outline" className="rounded-xl h-10 border-indigo-500/30 text-indigo-500 hover:bg-indigo-500/10">
+                                <Folder className="w-4 h-4 mr-2" /> Add Chapter
+                              </Button>
+                            )}
+                            {onUploadFile && (
+                              <Button onClick={() => setUploadDialogOpen(true)} className="rounded-xl h-10 bg-indigo-600 hover:bg-indigo-700 text-white shadow-md">
+                                <FileText className="w-4 h-4 mr-2" /> Add Lesson
+                              </Button>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Curriculum List */}
+                    <div className="space-y-4">
+                      {currentItems.length === 0 ? (
+                        <div className={cn("text-center py-12 rounded-2xl border border-dashed", isDarkTheme ? "border-neutral-800" : "border-neutral-300")}>
+                          <ImageIcon className="w-12 h-12 mx-auto text-neutral-400 mb-3 opacity-50" />
+                          <h3 className="text-lg font-medium text-neutral-500">
+                            {isThumbnailFolder ? "No thumbnail uploaded yet" : "This module is empty"}
+                          </h3>
                         </div>
-                      );
-                    })}
+                      ) : (
+                        <>
+                          {/* Folders (Chapters) - Hidden if it's the thumbnail folder */}
+                          {!isThumbnailFolder && currentItems.filter(i => i.type === 'folder').map(folder => (
+                            <div key={folder.id} className={cn("rounded-xl border overflow-hidden transition-all", isDarkTheme ? "bg-[#181818] border-neutral-800 hover:border-neutral-700" : "bg-white border-neutral-200 hover:border-neutral-300 shadow-sm")}>
+                              <div 
+                                className="flex items-center justify-between p-4 cursor-pointer select-none"
+                                onClick={() => handleDoubleClick(folder)}
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-500">
+                                    <Folder className="w-5 h-5 fill-indigo-500/20" />
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold">{folder.name}</h4>
+                                    <p className="text-xs text-neutral-500">{folder.description || 'Chapter Module'}</p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Button size="icon" variant="ghost" className="h-8 w-8 text-neutral-400 hover:text-white" onClick={(e) => { e.stopPropagation(); setRenameTarget(folder); setRenameValue(folder.name); setRenameDialogOpen(true); }}><Edit2 className="w-3.5 h-3.5" /></Button>
+                                  {onDeleteItems && <Button size="icon" variant="ghost" className="h-8 w-8 text-neutral-400 hover:text-rose-500" onClick={(e) => { e.stopPropagation(); onDeleteItems([folder.id], []); }}><Trash2 className="w-3.5 h-3.5" /></Button>}
+                                  <ChevronRight className="w-5 h-5 text-neutral-500" />
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                          
+                          {/* Files (Lessons/Thumbnails) */}
+                          {currentItems.filter(i => i.type === 'file').map(file => {
+                            const ext = file.name.split('.').pop()?.toLowerCase() || '';
+                            const isVideo = ['mp4', 'webm', 'mov'].includes(ext);
+                            const isPdf = ['pdf'].includes(ext);
+                            const isLink = ['url'].includes(ext);
+                            return (
+                              <div key={file.id} className={cn("flex items-center justify-between p-3.5 rounded-xl border transition-colors", isThumbnailFolder ? "w-full" : "ml-4", isDarkTheme ? "bg-[#1e1e1e] border-neutral-800/60 hover:bg-[#252525]" : "bg-neutral-50 border-neutral-200 hover:bg-neutral-100")}>
+                                <div className="flex items-center gap-3">
+                                  <div className={cn("w-8 h-8 rounded-md flex items-center justify-center", isVideo ? "bg-purple-500/10 text-purple-500" : isPdf ? "bg-rose-500/10 text-rose-500" : isLink ? "bg-sky-500/10 text-sky-500" : "bg-emerald-500/10 text-emerald-500")}>
+                                    {isVideo ? <Video className="w-4 h-4" /> : isPdf ? <FileText className="w-4 h-4" /> : isLink ? <LinkIcon className="w-4 h-4" /> : <File className="w-4 h-4" />}
+                                  </div>
+                                  <span className="font-medium text-sm">{file.name}</span>
+                                </div>
+                                <div className="flex items-center gap-1 opacity-50 hover:opacity-100 transition-opacity">
+                                  <Button size="icon" variant="ghost" className="h-7 w-7 text-neutral-400" onClick={() => { setRenameTarget(file); setRenameValue(file.name); setRenameDialogOpen(true); }}><Edit2 className="w-3.5 h-3.5" /></Button>
+                                  {onDeleteItems && <Button size="icon" variant="ghost" className="h-7 w-7 text-neutral-400 hover:text-rose-500" onClick={() => onDeleteItems([], [file.id])}><Trash2 className="w-3.5 h-3.5" /></Button>}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </>
+                      )}
+                    </div>
                   </>
-                )}
-              </div>
+                );
+              })()}
             </div>
           )}
         </div>
