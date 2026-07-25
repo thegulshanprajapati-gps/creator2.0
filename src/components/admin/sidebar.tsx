@@ -34,6 +34,7 @@ import {
   Trash2,
   ClipboardList,
   Award,
+  Construction,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -78,6 +79,7 @@ const MENU_ITEMS = [
     { label: "Service Connections", icon: Plug, href: "/connections" },
     { label: "System Settings", icon: Settings, href: "/settings" },
     { label: "Security Center", icon: ShieldCheck, href: "/security" },
+    { label: "Maintenance Control", icon: Construction, href: "/maintenance" },
   ]}
 ];
 

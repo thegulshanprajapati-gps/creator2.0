@@ -18,7 +18,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { FontColorPicker } from "@/components/admin/font-color-picker";
 import Link from "next/link";
 
-const PREDEFINED_CATEGORIES = ["Technology", "Guide", "AI", "General", "Programming"];
 
 const PRESET_IMAGES = [
   'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=600&q=80',
@@ -56,6 +55,9 @@ export default function BlogsAdminPage() {
   const [title, setTitle] = useState('');
   const [excerpt, setExcerpt] = useState('');
   const [category, setCategory] = useState('General');
+  const [availableCategories, setAvailableCategories] = useState<string[]>(['Technology', 'Guide', 'AI', 'General', 'Programming']);
+  const [newCatName, setNewCatName] = useState('');
+  const [addingCat, setAddingCat] = useState(false);
   const [author, setAuthor] = useState('');
   const [readTime, setReadTime] = useState('1 min');
   const [image, setImage] = useState('');
@@ -108,6 +110,39 @@ export default function BlogsAdminPage() {
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch('/api/blog-categories');
+      if (res.ok) setAvailableCategories(await res.json());
+    } catch (e) {
+      console.error('Failed to load categories:', e);
+    }
+  };
+
+  const handleAddCategory = async () => {
+    const trimmed = newCatName.trim();
+    if (!trimmed) return;
+    setAddingCat(true);
+    try {
+      const res = await fetch('/api/blog-categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: trimmed }),
+      });
+      if (res.ok) {
+        await fetchCategories();
+        setCategory(trimmed);
+        setNewCatName('');
+        toast({ title: 'Category created', description: `"${trimmed}" added successfully.` });
+      } else {
+        const d = await res.json();
+        toast({ variant: 'destructive', title: 'Error', description: d.error || 'Failed to create category' });
+      }
+    } finally {
+      setAddingCat(false);
+    }
+  };
+
   const fetchTrashCount = async () => {
     try {
       const res = await fetch('/api/blogs/trash');
@@ -123,6 +158,7 @@ export default function BlogsAdminPage() {
   useEffect(() => {
     fetchBlogs();
     fetchTrashCount();
+    fetchCategories();
 
     const handleCreateNewEvent = () => {
       handleCreateNew();
@@ -641,9 +677,27 @@ export default function BlogsAdminPage() {
                             <SelectValue placeholder="Select Category" />
                           </SelectTrigger>
                           <SelectContent>
-                            {PREDEFINED_CATEGORIES.map(cat => (
+                            {availableCategories.map(cat => (
                               <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                             ))}
+                            {/* Inline new category creator */}
+                            <div className="flex items-center gap-1.5 px-2 py-1.5 border-t border-slate-100 dark:border-slate-800 mt-1">
+                              <input
+                                type="text"
+                                value={newCatName}
+                                onChange={e => setNewCatName(e.target.value)}
+                                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddCategory(); }}}
+                                placeholder="New category..."
+                                className="flex-1 text-xs bg-transparent outline-none border-b border-slate-200 dark:border-slate-700 pb-0.5 text-slate-800 dark:text-slate-200 placeholder:text-slate-400"
+                              />
+                              <button
+                                onClick={handleAddCategory}
+                                disabled={addingCat || !newCatName.trim()}
+                                className="text-[10px] font-bold text-red-500 hover:text-red-600 disabled:opacity-40 shrink-0"
+                              >
+                                {addingCat ? '...' : '+ Add'}
+                              </button>
+                            </div>
                           </SelectContent>
                         </Select>
                       </div>
